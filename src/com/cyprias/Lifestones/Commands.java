@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Config.lifestoneStructure;
+import com.cyprias.Lifestones.Events.attuneTask;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 
@@ -18,6 +19,42 @@ public class Commands implements CommandExecutor {
 	public Commands(Lifestones plugin) {
 		this.plugin = plugin;
 	}
+	
+	public class recallTask implements Runnable {
+		Player player;
+		
+		
+		int pX, pY, pZ;
+		public recallTask(Player player){
+			this.player = player;
+			
+			pX = player.getLocation().getBlockX();
+			pY = player.getLocation().getBlockY();
+			pZ = player.getLocation().getBlockZ();
+			
+			plugin.sendMessage(player, "Recalling to lifestone in " + (Config.recallDelay/20) + " seconds, move to cancel.");
+		}
+		private int taskID;
+		public void setID(int id){
+			taskID = id;
+		}
+		
+		public void run() {
+			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ){
+				plugin.sendMessage(player, "You moved too far, attunement failed.");
+				return;
+			}
+
+			Attunement attunement = Attunements.players.get(player.getName());
+
+			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw, attunement.pitch);
+
+			player.teleport(loc);
+			plugin.sendMessage(player, "Recalled to lifestone");
+		}
+	}
+	
+	
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		//final String message = getFinalArg(args, 0);
@@ -28,15 +65,13 @@ public class Commands implements CommandExecutor {
 				plugin.sendMessage(sender, "You have not attuned to a lifestone yet.");
 				return true;
 			}
-			
-			Attunement attunement = Attunements.players.get(sender.getName());
-			
-			
-			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw, attunement.pitch);
-			
 			Player player = (Player) sender;
-			player.teleport(loc);
-			plugin.sendMessage(sender, "Recalled to lifestone");
+			
+			recallTask task = new recallTask(player);
+			int taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.recallDelay);
+			task.setID(taskID);
+			
+
 			return true;
 			
 		}else if (cmd.getName().equals("lifestones")){

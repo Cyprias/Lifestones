@@ -50,7 +50,7 @@ public class Events implements Listener {
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
 			
-			plugin.sendMessage(player, "Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel.");
+			plugin.sendMessage(player, "Attuning to lifestone in " + (Config.attuneDelay/20) + " seconds, move to cancel.");
 		}
 		private int taskID;
 		public void setID(int id){
@@ -99,7 +99,7 @@ public class Events implements Listener {
 					Player player = event.getPlayer();
 					
 					attuneTask task = new attuneTask(player);
-					int taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay * 20L);
+					int taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay);
 					task.setID(taskID);
 					
 					/*
