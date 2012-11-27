@@ -14,22 +14,19 @@ permissions:
   lifestones.*:
     description: Gives access to all lifestones commands
     default: false
-  lifestones.*:
-    description: Gives access to all lifestones commands
-    default: false
     children:
       lifestones.user: true
       lifestones.admin: true
-    lifestones.user:
-        description: Gives access to general user commands.
-        default: false
-        children:
-          lifestones.recall: true
-          lifestones.attune: true
-    lifestones.admin:
-        description: Gives access to admin commands.
-        default: false
-        children:
-          lifestones.create: 
-          lifestones.breaklifestone: true
-          lifestones.modifyprotectedblocks: true
+  lifestones.user:
+    description: Gives access to general user commands.
+    default: false
+    children:
+      lifestones.recall: true
+      lifestones.attune: true
+  lifestones.admin:
+    description: Gives access to admin commands.
+    default: false
+    children:
+      lifestones.create: 
+      lifestones.breaklifestone: true
+      lifestones.modifyprotectedblocks: true
