@@ -38,6 +38,51 @@ public class Events implements Listener {
 		plugin.info(event.getEventName());
 	}*/
 	
+	public class attuneTask implements Runnable {
+		Player player;
+		
+		
+		int pX, pY, pZ;
+		public attuneTask(Player player){
+			this.player = player;
+			
+			pX = player.getLocation().getBlockX();
+			pY = player.getLocation().getBlockY();
+			pZ = player.getLocation().getBlockZ();
+			
+			plugin.sendMessage(player, "Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel.");
+		}
+		private int taskID;
+		public void setID(int id){
+			taskID = id;
+		}
+		
+		public void run() {
+			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ){
+				plugin.sendMessage(player, "You moved too far, attunement failed.");
+				return;
+			}
+			
+			Location pLoc = player.getLocation();
+			String pWorld = pLoc.getWorld().getName();
+			double pX = pLoc.getX();
+			double pY = pLoc.getY();
+			double pZ = pLoc.getZ();
+			
+			float pYaw = pLoc.getYaw();
+			float pPitch = pLoc.getPitch();
+			
+			
+			String pName = player.getName();
+			
+			
+			Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
+			plugin.sendMessage(player, "Attuned to lifestone");
+			
+			plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+		}
+	}
+	
 	private Logger log = Logger.getLogger("Minecraft");
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -52,8 +97,12 @@ public class Events implements Listener {
 			if (cBlock.getTypeId() == 77 || cBlock.getTypeId() == 143){//BUTTON
 				if (plugin.isLifestone(cBlock) == true){
 					Player player = event.getPlayer();
-					//plugin.sendMessage(player,  "You hit a LS button!");
 					
+					attuneTask task = new attuneTask(player);
+					int taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay * 20L);
+					task.setID(taskID);
+					
+					/*
 					Location pLoc = player.getLocation();
 					String pWorld = pLoc.getWorld().getName();
 					double pX = pLoc.getX();
@@ -71,7 +120,7 @@ public class Events implements Listener {
 					plugin.sendMessage(player, "Attuned to lifestone");
 					
 					plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
-					
+					*/
 					
 					
 				}

@@ -17,7 +17,7 @@ public class Config {
 
 	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion;
 	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort;
-	public static int protectLifestoneRadius;
+	public static int protectLifestoneRadius, attuneDelay;
 	
 	public Config(Lifestones plugin) {
 		this.plugin = plugin;
@@ -50,6 +50,7 @@ public class Config {
 		sqlURL = "jdbc:mysql://" + sqlHost + ":" + sqlPort + "/" + sqlDatabase;
 		
 		
+		attuneDelay = config.getInt("attuneDelay");
 		
 		loadStrucutre();
 	}
