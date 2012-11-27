@@ -52,10 +52,6 @@ public class Events implements Listener {
 			
 			plugin.sendMessage(player, "Attuning to lifestone in " + (Config.attuneDelay/20) + " seconds, move to cancel.");
 		}
-		private int taskID;
-		public void setID(int id){
-			taskID = id;
-		}
 		
 		public void run() {
 			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ){
@@ -97,32 +93,12 @@ public class Events implements Listener {
 			if (cBlock.getTypeId() == 77 || cBlock.getTypeId() == 143){//BUTTON
 				if (plugin.isLifestone(cBlock) == true){
 					Player player = event.getPlayer();
-					
+					if (!plugin.commands.hasCommandPermission(player, "lifestones.attune")) {
+						return;
+					}
+
 					attuneTask task = new attuneTask(player);
-					int taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay);
-					task.setID(taskID);
-					
-					/*
-					Location pLoc = player.getLocation();
-					String pWorld = pLoc.getWorld().getName();
-					double pX = pLoc.getX();
-					double pY = pLoc.getY();
-					double pZ = pLoc.getZ();
-					
-					float pYaw = pLoc.getYaw();
-					float pPitch = pLoc.getPitch();
-					
-					
-					String pName = player.getName();
-					
-					
-					Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
-					plugin.sendMessage(player, "Attuned to lifestone");
-					
-					plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
-					*/
-					
-					
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay);
 				}
 			}
 		}
