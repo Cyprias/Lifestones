@@ -1,0 +1,16 @@
+name: Lifestones
+main: com.cyprias.Lifestones.Lifestones
+version: 0.0.1
+
+commands:
+  lifestones:
+    description: Lifestones commands.
+    usage: /<command>
+  lifestone:
+    description: Recall to lifestone
+    usage: /<command>
+
+permissions:
+  lifestones.*:
+    description: Gives access to all lifestones commands
+    default: false
