@@ -41,7 +41,8 @@ public class Lifestones extends JavaPlugin {
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
 		
-		database.loadLifestones(Config.preferAsyncDBCalls);
+		database.loadDatabases();
+		
 		
 		info(String.format(stPluginEnabled, pluginName, this.getDescription().getVersion()));
 	}

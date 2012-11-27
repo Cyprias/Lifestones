@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
@@ -59,16 +60,34 @@ public class Events implements Listener {
 					double pY = pLoc.getY();
 					double pZ = pLoc.getZ();
 					
-					float pPitch = pLoc.getPitch();
 					float pYaw = pLoc.getYaw();
+					float pPitch = pLoc.getPitch();
+					
 					
 					String pName = player.getName();
 					
 					
-					Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pPitch, pYaw));
+					Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
 					plugin.sendMessage(player, "Attuned to lifestone");
+					
+					plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+					
+					
+					
 				}
 			}
+		}
+	}
+	
+	
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		plugin.info(event.getEventName());
+		if (Attunements.players.containsKey(event.getPlayer().getName())){
+			Attunement attunement = Attunements.players.get(event.getPlayer().getName());
+			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw, attunement.pitch);
+			event.setRespawnLocation(loc);
 		}
 	}
 	

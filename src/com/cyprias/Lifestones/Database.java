@@ -15,11 +15,7 @@ public class Database {
 	public SQLite sqlite;
 	public Database(Lifestones plugin) {
 		this.plugin = plugin;
-		plugin.info("path: " + plugin.getDataFolder().getPath());
-		
 		sqlite = new SQLite(this, plugin.getDataFolder());
-		
-		
 	}
 	
 	public void saveLifestone(String world, int X, int Y, int Z){
@@ -29,6 +25,13 @@ public class Database {
 			sqlite.saveLifestone(world, X, Y, Z);
 		//}
 
+	}
+	
+	public void loadDatabases(){
+		
+		loadLifestones(Config.preferAsyncDBCalls);
+		loadAttunments(Config.preferAsyncDBCalls);
+		
 	}
 	
 	public void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
@@ -66,29 +69,48 @@ public class Database {
 		}
 	}
 	
-	public void saveAttunment(String world, int X, int Y, int Z){
+	public void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch){
 		//if (Config.mysqlEnabled == true){
 			
 		//}else{
-			sqlite.saveAttunment(world, X, Y, Z);
+			sqlite.saveAttunment(player, world, x, y, z,yaw,pitch);
 		//}
 
 	}
 	
-	public void saveAttunment(final String world, final int X, final int Y, final int Z, Boolean async) {
+	public void saveAttunment(final String player, final String world, final double x, final double y, final double z, final float yaw, final float pitch, Boolean async) {
 		if (async == true){
 			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					sqlite.saveAttunment(world, X, Y, Z);
+					sqlite.saveAttunment(player, world, x, y, z,yaw,pitch);
 				}
 			});
 			
 		}else{
-			sqlite.saveAttunment(world, X, Y, Z);
+			sqlite.saveAttunment(player, world, x, y, z,yaw,pitch);
 		}
 	}
 	
+	public void loadAttunements() {
+		//if (Config.mysqlEnabled == true){
+			
+		//}else{
+			sqlite.loadAttunements();
+		//}
+	}
 	
+	public void loadAttunments(Boolean async) {
+		if (async == true){
+			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+				public void run() {
+					sqlite.loadAttunements();
+				}
+			});
+			
+		}else{
+			loadAttunements();
+		}
+	}
 	
 	public void loadLifestones() {
 		//if (Config.mysqlEnabled == true){

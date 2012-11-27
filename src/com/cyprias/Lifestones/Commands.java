@@ -37,7 +37,7 @@ public class Commands implements CommandExecutor {
 			Player player = (Player) sender;
 			player.teleport(loc);
 			plugin.sendMessage(sender, "Recalled to lifestone");
-			
+			return true;
 			
 		}else if (cmd.getName().equals("lifestones")){
 		

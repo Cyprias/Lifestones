@@ -10,7 +10,9 @@ import java.sql.Statement;
 
 import org.bukkit.block.Block;
 
+import com.cyprias.Lifestones.Attunements;
 import com.cyprias.Lifestones.Database;
+import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class SQLite {
@@ -30,8 +32,12 @@ public class SQLite {
 	public boolean tableExists(String tableName) {
 		boolean exists = false;
 		String query;
-
+		
+		
 		try {
+			Class.forName("java.sql.Driver");
+	
+			
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
 			ResultSet result = stat.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "';");
@@ -47,6 +53,9 @@ public class SQLite {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return exists;
@@ -58,10 +67,13 @@ public class SQLite {
 			Statement stat = con.createStatement();
 
 			if (tableExists("Lifestones") == false) {
-				database.plugin.info("Creating lifestones table.");
 				stat.executeUpdate("CREATE TABLE `Lifestones` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL)");
 			}
-
+			if (tableExists("Attunements") == false) {
+				stat.executeUpdate("CREATE TABLE `Attunements` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
+				//player, world, x,y,z,yaw, pitch
+			}
+			
 			stat.close();
 			con.close();
 
@@ -110,6 +122,33 @@ public class SQLite {
 		}
 	}
 
+	
+	public void loadAttunements() {
+		
+		try {
+			Connection con = DriverManager.getConnection(sqlDB);
+			Statement stat = con.createStatement();
+			ResultSet rs = stat.executeQuery("select * from Attunements;");
+			while (rs.next()) {
+				
+				
+			
+				
+				//database.plugin.regsterLifestone(new lifestoneLoc(rs.getString("world"), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
+				
+				Attunements.players.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
+				
+				
+			}
+			rs.close();
+			con.close();
+			
+			
+			
+		} catch (SQLException e) {e.printStackTrace();}
+		
+	}
+	
 	public void loadLifestones() {
 		
 		try {
@@ -177,9 +216,51 @@ public class SQLite {
 		}
 	}
 	
-	public void saveAttunment(String bWorld, int bX, int bY, int bZ) {
+	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
+		try {
+			Connection con = DriverManager.getConnection(sqlDB);
+
+			Statement stat = con.createStatement();
+			PreparedStatement prep;
+			/**/
+			prep = con.prepareStatement("UPDATE `Attunements` SET `world` = ?, `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ?");
+			
+			
+			prep.setString(1, bWorld);
+			prep.setDouble(2, x);
+			prep.setDouble(3, y);
+			prep.setDouble(4, z);
+			prep.setFloat(5, yaw);
+			prep.setFloat(6, pitch);
+			prep.setString(7, player);
+			int rs = prep.executeUpdate();
+			if (rs > 0){
+				return;
+			}
+			
+			
 		
-		
+			prep = con.prepareStatement("insert into `Attunements` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)");
+			prep.setString(1, player);
+			prep.setString(2, bWorld);
+			
+			prep.setDouble(3, x);
+			prep.setDouble(4, y);
+			prep.setDouble(5, z);
+			prep.setFloat(6, yaw);
+			prep.setFloat(7, pitch);
+			
+			System.out.println("Saved attune to DB.");
+
+			prep.execute();
+
+			
+			
+			stat.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
