@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.cyprias.Lifestones.Config.lifestoneStructure;
 
-
 public class Lifestones extends JavaPlugin {
 	private String stPluginEnabled = "§f%s §7v§f%s §7is enabled.";
 	public static String chatPrefix = "§f[§aLs§f] ";
@@ -25,6 +25,7 @@ public class Lifestones extends JavaPlugin {
 	public YML yml;
 	public Events events;
 	public Database database;
+	public VersionChecker versionChecker;
 	public void onLoad() {
 		pluginName = getDescription().getName();
 		
@@ -33,6 +34,13 @@ public class Lifestones extends JavaPlugin {
 		this.commands = new Commands(this);
 		this.events = new Events(this);
 		this.database = new Database(this);
+		
+		this.versionChecker = new VersionChecker(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
+		try {
+			Metrics metrics = new Metrics(this);
+			metrics.start();
+		} catch (IOException e) {
+		}
 	}
 	
 	public void onEnable() {
@@ -42,6 +50,9 @@ public class Lifestones extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.events, this);
 		
 		database.loadDatabases();
+		
+		if (Config.checkForNewVersion == true)
+			this.versionChecker.retreiveVersionInfo();
 		
 		
 		info(String.format(stPluginEnabled, pluginName, this.getDescription().getVersion()));

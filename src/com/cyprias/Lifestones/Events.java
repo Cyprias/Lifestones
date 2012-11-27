@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
-
+import com.cyprias.Lifestones.VersionChecker.VersionCheckerEvent;
 
 public class Events implements Listener {
 	private Lifestones plugin;
@@ -151,5 +151,18 @@ public class Events implements Listener {
 			}
 		}
 		
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onVersionChecker(VersionCheckerEvent event) {
+		if (event.getPluginName() == plugin.getName()) {
+			VersionChecker.versionInfo info = event.getVersionInfo(0);
+			String curVersion = plugin.getDescription().getVersion();
+			int compare = plugin.versionChecker.compareVersions(curVersion, info.getTitle());
+			if (compare < 0) {
+				plugin.info("We're running v" + curVersion + ", v" + info.getTitle() + " is available");
+				plugin.info(info.getLink());
+			}
+		}
 	}
 }
