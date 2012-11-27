@@ -27,6 +27,6 @@ permissions:
     description: Gives access to admin commands.
     default: false
     children:
-      lifestones.create: 
+      lifestones.create: true
       lifestones.breaklifestone: true
       lifestones.modifyprotectedblocks: true
