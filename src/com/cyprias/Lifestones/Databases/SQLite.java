@@ -11,6 +11,7 @@ import java.sql.Statement;
 import org.bukkit.block.Block;
 
 import com.cyprias.Lifestones.Attunements;
+import com.cyprias.Lifestones.Config;
 import com.cyprias.Lifestones.Database;
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
@@ -21,12 +22,12 @@ public class SQLite {
 
 	private String sqlDB;
 
-	public SQLite(Database databases, File file) {
-		this.database = databases;
+	public SQLite(Database database, File file) {
+		this.database = database;
 		this.pluginPath = file.getPath() + file.separator;
 
 		sqlDB = "jdbc:sqlite:" + pluginPath + "database.sqlite";
-		createTables();
+		
 	}
 
 	public boolean tableExists(String tableName) {
@@ -130,15 +131,7 @@ public class SQLite {
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from Attunements;");
 			while (rs.next()) {
-				
-				
-			
-				
-				//database.plugin.regsterLifestone(new lifestoneLoc(rs.getString("world"), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
-				
 				Attunements.players.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
-				
-				
 			}
 			rs.close();
 			con.close();
@@ -156,19 +149,11 @@ public class SQLite {
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from Lifestones;");
 			while (rs.next()) {
-				
-				
-			
-				
 				database.plugin.regsterLifestone(new lifestoneLoc(rs.getString("world"), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
-				
-				
 			}
 			rs.close();
 			con.close();
-			
-			
-			
+
 		} catch (SQLException e) {e.printStackTrace();}
 		
 	}
@@ -179,12 +164,13 @@ public class SQLite {
 		//bX = block.getX();
 		//bY = block.getY();
 		//bZ = block.getZ();
-			
+		String table = "Lifestones";
+		
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 
 			Statement stat = con.createStatement();
-			ResultSet rs = stat.executeQuery("select * from Lifestones;");
+			ResultSet rs = stat.executeQuery("select * from `"+table+"` where `world` LIKE "+bWorld+" AND `x` LIKE " + bX + " AND `y` LIKE " + bY+ " AND `z` LIKE "+bZ);
 			while (rs.next()) {
 				if (rs.getString("world").equalsIgnoreCase(bWorld)){
 					
@@ -199,7 +185,7 @@ public class SQLite {
 				}
 			}
 			
-			PreparedStatement prep = con.prepareStatement("insert into Lifestones (world, x, y, z) values (?, ?, ?, ?)");
+			PreparedStatement prep = con.prepareStatement("insert into `"+table+"` (world, x, y, z) values (?, ?, ?, ?)");
 			prep.setString(1, bWorld);
 			prep.setInt(2, bX);
 			prep.setInt(3, bY);
@@ -217,13 +203,14 @@ public class SQLite {
 	}
 	
 	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
+		String table = "Attunements";
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 
 			Statement stat = con.createStatement();
 			PreparedStatement prep;
 			/**/
-			prep = con.prepareStatement("UPDATE `Attunements` SET `world` = ?, `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ?");
+			prep = con.prepareStatement("UPDATE `"+table+"` SET `world` = ?, `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ?");
 			
 			
 			prep.setString(1, bWorld);
@@ -240,7 +227,7 @@ public class SQLite {
 			
 			
 		
-			prep = con.prepareStatement("insert into `Attunements` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)");
+			prep = con.prepareStatement("insert into `"+table+"` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)");
 			prep.setString(1, player);
 			prep.setString(2, bWorld);
 			
@@ -270,9 +257,7 @@ public class SQLite {
 			Connection con = DriverManager.getConnection(sqlDB);
 
 			Statement stat = con.createStatement();
-			ResultSet rs = stat.executeQuery("select * from Lifestones;");
-
-			
+	
 			PreparedStatement prep = con.prepareStatement("DELETE from Lifestones where `world` LIKE ? AND `x` LIKE ? AND `y` LIKE ? AND `z` LIKE ?");
 			prep.setString(1, bWorld);
 			prep.setInt(2, bX);
@@ -281,8 +266,6 @@ public class SQLite {
 
 			prep.execute();
 
-			
-			rs.close();
 			stat.close();
 			con.close();
 		} catch (SQLException e) {

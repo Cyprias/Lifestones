@@ -16,6 +16,7 @@ public class Config {
 	
 
 	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion;
+	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort;
 	public static int protectLifestoneRadius;
 	
 	public Config(Lifestones plugin) {
@@ -32,13 +33,23 @@ public class Config {
 		loadConfigOpts();
 	}
 	private void loadConfigOpts(){
-		mysqlEnabled = config.getBoolean("mysql.enabled");
 		preferAsyncDBCalls = config.getBoolean("preferAsyncDBCalls");
 		setUnregisteredLifestonesToAir = config.getBoolean("setUnregisteredLifestonesToAir");
 		protectLifestoneRadius = config.getInt("protectLifestoneRadius");
 		
 		debugMessages = config.getBoolean("debugMessages");
 		checkForNewVersion = config.getBoolean("checkForNewVersion");
+		
+		mysqlEnabled = config.getBoolean("mysql.enabled");
+		sqlUsername = config.getString("mysql.username");
+		sqlPassword = config.getString("mysql.password");
+		sqlPrefix = config.getString("mysql.prefix"); 
+		sqlDatabase = config.getString("mysql.database");
+		sqlHost = config.getString("mysql.hostname");
+		sqlPort = config.getString("mysql.port");
+		sqlURL = "jdbc:mysql://" + sqlHost + ":" + sqlPort + "/" + sqlDatabase;
+		
+		
 		
 		loadStrucutre();
 	}

@@ -31,9 +31,12 @@ public class Lifestones extends JavaPlugin {
 		
 		this.yml = new YML(this);
 		this.config = new Config(this);
+		config.reloadOurConfig();
 		this.commands = new Commands(this);
 		this.events = new Events(this);
 		this.database = new Database(this);
+		
+		this.database.createTables(Config.preferAsyncDBCalls);
 		
 		this.versionChecker = new VersionChecker(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		try {
@@ -49,7 +52,7 @@ public class Lifestones extends JavaPlugin {
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
 		
-		database.loadDatabases();
+		database.loadDatabases(Config.preferAsyncDBCalls);
 		
 		if (Config.checkForNewVersion == true)
 			this.versionChecker.retreiveVersionInfo();
