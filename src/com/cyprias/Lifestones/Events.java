@@ -47,10 +47,7 @@ public class Events implements Listener {
 			//log.info("cBlock: " + cBlock.getType());
 			if (cBlock.getTypeId() == 77 || cBlock.getTypeId() == 143){//BUTTON
 				if (plugin.isLifestone(cBlock) == true){
-					event.getPlayer().sendMessage("You hit a LS button!");
-
-					
-					
+					plugin.sendMessage(event.getPlayer(), "You hit a LS button!");
 					
 				}
 			}
@@ -67,6 +64,7 @@ public class Events implements Listener {
 			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))){
 				plugin.sendMessage(player, "You cannot damage the lifestone.");
 				event.setCancelled(true);
+				return;
 			}
 			
 			//

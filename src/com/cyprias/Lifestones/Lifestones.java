@@ -115,7 +115,7 @@ public class Lifestones extends JavaPlugin {
 	}
 	
 	public ArrayList<lifestoneLoc> lifestoneLocations = new ArrayList<lifestoneLoc>();
-	public void regsterLifestone(lifestoneLoc lsLoc){
+	public void regsterLifestone(final lifestoneLoc lsLoc){
 		for (int i=0;i<lifestoneLocations.size();i++){
 			if (lifestoneLocations.get(i).world.equals(lsLoc.world)){
 				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z){
@@ -126,27 +126,58 @@ public class Lifestones extends JavaPlugin {
 		}
 		lifestoneLocations.add(lsLoc);
 		info("Added LS at " + lsLoc.world + ", " + lsLoc.X + ", " + lsLoc.Y + ", " + lsLoc.Z);
-		isLifestoneCache.clear();
+		//isLifestoneCache.clear();
+		
+		//our loadLifestones function may be called asyncly, caching blocks grabs blocks so should be run in the main thread. 
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			public void run() {
+				cacheSurroundBlocks(lsLoc);
+			}
+		});
 	}
-	public void unregsterLifestone(lifestoneLoc lsLoc){
+
+	
+	private void cacheSurroundBlocks(lifestoneLoc loc){
+		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X , loc.Y, loc.Z);
+		lifestoneStructure lsBlock;
+		for (int b=0; b<Config.structureBlocks.size();b++){
+			lsBlock = Config.structureBlocks.get(b);
+			isLifestoneCache.put(getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ), cBlock);
+		}
+	}
+	
+	private void removeCachedSurroundBlocks(lifestoneLoc loc){
+		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X , loc.Y, loc.Z);
+		lifestoneStructure lsBlock;
+		for (int b=0; b<Config.structureBlocks.size();b++){
+			lsBlock = Config.structureBlocks.get(b);
+			//isLifestoneCache.put(cBlock, getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ));
+			isLifestoneCache.remove(getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ));
+		}
+	}
+	
+	
+	public void unregsterLifestone(final lifestoneLoc lsLoc){
 		for (int i=0;i<lifestoneLocations.size();i++){
 			if (lifestoneLocations.get(i).world.equals(lsLoc.world)){
 				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z){
 					lifestoneLocations.remove(i);
-					isLifestoneCache.clear();
+
+					removeCachedSurroundBlocks(lsLoc);
+					
 					return;
 				}
 			}
 		}
+		
 	}
-	
 	
 	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public Boolean isLifestone(Block block){
 		
 		if (isLifestoneCache.containsKey(block))
 			return (isLifestoneCache.get(block) != null);
-		
+		/*
 		String bWorld = block.getWorld().getName();
 		int bX = block.getX();
 		int bY = block.getY();
@@ -174,7 +205,7 @@ public class Lifestones extends JavaPlugin {
 				
 			}
 			
-		}
+		}*/
 		
 		isLifestoneCache.put(block, null);
 		return false;
