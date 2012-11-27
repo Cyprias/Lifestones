@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -62,7 +63,7 @@ public class Events implements Listener {
 		if (plugin.isLifestone(block) == true){
 			
 			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))){
-				plugin.sendMessage(player, "You cannot damage the lifestone.");
+				plugin.sendMessage(player, "You cannot modify the lifestone.");
 				event.setCancelled(true);
 				return;
 			}
@@ -77,9 +78,42 @@ public class Events implements Listener {
 			
 			plugin.sendMessage(player, "Lifestone unregistered.");
 			
+			
+			event.setCancelled(true);//Stop the block from falling, our unregister function should air the block.
+			
+			
+		}else if (plugin.isProtected(block) == true){
+			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))){
+				plugin.sendMessage(player, "That block is protected by the lifestone.");
+				event.setCancelled(true);
+				return;
+			}
+			
 		}
 		
 	}
 	
-	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onBlockPlace(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		
+		Block block = event.getBlock();
+		if (plugin.isLifestone(block) == true){
+			
+			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))){
+				plugin.sendMessage(player, "You cannot modify the lifestone.");
+				event.setCancelled(true);
+				return;
+			}
+			
+			
+		}else if (plugin.isProtected(block) == true){
+			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))){
+				plugin.sendMessage(player, "That block is protected by the lifestone.");
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
+	}
 }

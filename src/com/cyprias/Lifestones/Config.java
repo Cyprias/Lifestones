@@ -15,7 +15,8 @@ public class Config {
 	private static Configuration config;
 	
 
-	public static Boolean mysqlEnabled, preferAsyncDBCalls;
+	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir;
+	public static int protectLifestoneRadius;
 	
 	public Config(Lifestones plugin) {
 		this.plugin = plugin;
@@ -33,6 +34,8 @@ public class Config {
 	private void loadConfigOpts(){
 		mysqlEnabled = config.getBoolean("mysql.enabled");
 		preferAsyncDBCalls = config.getBoolean("preferAsyncDBCalls");
+		setUnregisteredLifestonesToAir = config.getBoolean("setUnregisteredLifestonesToAir");
+		protectLifestoneRadius = config.getInt("protectLifestoneRadius");
 		
 		loadStrucutre();
 	}

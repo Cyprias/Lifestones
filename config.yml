@@ -7,3 +7,5 @@ mysql:
   database: minecraft
   prefix: "Ls_"
 preferAsyncDBCalls: true
+setUnregisteredLifestonesToAir: true
+protectLifestoneRadius: 3

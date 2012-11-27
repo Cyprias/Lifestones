@@ -27,6 +27,11 @@ public class Commands implements CommandExecutor {
 				Player player = (Player) sender;
 				
 				Block pBlock = player.getLocation().getBlock();
+				if (plugin.isProtected(pBlock)){
+					plugin.sendMessage(sender, "You're too close to another lifestone.");
+					return true;
+				}
+				
 				Block rBlock;
 				
 				lifestoneStructure lsBlock;
@@ -37,9 +42,9 @@ public class Commands implements CommandExecutor {
 					rBlock.setData(lsBlock.bData);
 				}
 				
-				
-				plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 				plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
+				plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
+				
 				
 				return true;
 			}else if (args[0].equalsIgnoreCase("sql")){
