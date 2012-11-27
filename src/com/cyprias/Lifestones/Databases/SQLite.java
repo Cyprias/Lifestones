@@ -134,12 +134,12 @@ public class SQLite {
 		
 	}
 	
-	public void saveLifestone(Block block) {
-		String bWorld = block.getWorld().getName();
-		int bX, bY, bZ;
-		bX = block.getX();
-		bY = block.getY();
-		bZ = block.getZ();
+	public void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
+		//String bWorld = block.getWorld().getName();
+		//int bX, bY, bZ;
+		//bX = block.getX();
+		//bY = block.getY();
+		//bZ = block.getZ();
 			
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
@@ -167,10 +167,7 @@ public class SQLite {
 			prep.setInt(4, bZ);
 
 			prep.execute();
-			
-			//prep.addBatch();
-			//prep.executeBatch();
-			System.out.println("think sqlite worked...");
+
 			
 			rs.close();
 			stat.close();
@@ -178,6 +175,34 @@ public class SQLite {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void removeLifestone(String bWorld, int bX, int bY, int bZ) {
+		
+		try {
+			Connection con = DriverManager.getConnection(sqlDB);
+
+			Statement stat = con.createStatement();
+			ResultSet rs = stat.executeQuery("select * from Lifestones;");
+
+			
+			PreparedStatement prep = con.prepareStatement("DELETE from Lifestones where `world` LIKE ? AND `x` LIKE ? AND `y` LIKE ? AND `z` LIKE ?");
+			prep.setString(1, bWorld);
+			prep.setInt(2, bX);
+			prep.setInt(3, bY);
+			prep.setInt(4, bZ);
+
+			prep.execute();
+
+			
+			rs.close();
+			stat.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

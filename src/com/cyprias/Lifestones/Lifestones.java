@@ -1,6 +1,7 @@
 package com.cyprias.Lifestones;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -81,9 +82,25 @@ public class Lifestones extends JavaPlugin {
 		return player.hasPermission(node);
 	}
 	
-	public void sendMessage(CommandSender sender, String message) {
-		info("§e" + sender.getName() + "->§f" + message);
+	public void sendMessage(CommandSender sender, String message, Boolean showConsole, Boolean sendPrefix) {
+		if (sender instanceof Player && showConsole == true) {
+			info("§e" + sender.getName() + "->§f" + message);
+		}
+		if (sendPrefix == true) {
+			sender.sendMessage(chatPrefix + message);
+		} else {
+			sender.sendMessage(message);
+		}
 	}
+
+	public void sendMessage(CommandSender sender, String message, Boolean showConsole) {
+		sendMessage(sender, message, showConsole, true);
+	}
+
+	public void sendMessage(CommandSender sender, String message) {
+		sendMessage(sender, message, true);
+	}
+	
 	
 	/**/
 	static public class  lifestoneLoc {
@@ -109,9 +126,27 @@ public class Lifestones extends JavaPlugin {
 		}
 		lifestoneLocations.add(lsLoc);
 		info("Added LS at " + lsLoc.world + ", " + lsLoc.X + ", " + lsLoc.Y + ", " + lsLoc.Z);
+		isLifestoneCache.clear();
+	}
+	public void unregsterLifestone(lifestoneLoc lsLoc){
+		for (int i=0;i<lifestoneLocations.size();i++){
+			if (lifestoneLocations.get(i).world.equals(lsLoc.world)){
+				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z){
+					lifestoneLocations.remove(i);
+					isLifestoneCache.clear();
+					return;
+				}
+			}
+		}
 	}
 	
+	
+	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public Boolean isLifestone(Block block){
+		
+		if (isLifestoneCache.containsKey(block))
+			return (isLifestoneCache.get(block) != null);
+		
 		String bWorld = block.getWorld().getName();
 		int bX = block.getX();
 		int bY = block.getY();
@@ -126,11 +161,13 @@ public class Lifestones extends JavaPlugin {
 				continue;
 
 			if (loc.X == bX && loc.Y == bY && loc.Z == bZ){
+				isLifestoneCache.put(block, getServer().getWorld(bWorld).getBlockAt(bX , bY, bZ));
 				return true;
 			}
 			for (int b=0; b<Config.structureBlocks.size();b++){
 				lsBlock = Config.structureBlocks.get(b);
 				if ((loc.X+lsBlock.rX) == bX && (loc.Y+lsBlock.rY) == bY && (loc.Z+lsBlock.rZ) == bZ){
+					isLifestoneCache.put(block, getServer().getWorld(bWorld).getBlockAt(loc.X , loc.Y, loc.Z));
 					return true;
 				}
 				
@@ -139,7 +176,15 @@ public class Lifestones extends JavaPlugin {
 			
 		}
 		
+		isLifestoneCache.put(block, null);
 		return false;
+	}
+	
+	public Block getLifestoneCenterBlock(Block block){
+		if (isLifestone(block)){
+			return isLifestoneCache.get(block);
+		}
+		return null;
 	}
 	
 }

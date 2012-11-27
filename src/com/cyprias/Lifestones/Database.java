@@ -22,35 +22,56 @@ public class Database {
 		
 	}
 	
-	public void saveLifestone(Block block){
-		
-		if (Config.mysqlEnabled == true){
+	public void saveLifestone(String world, int X, int Y, int Z){
+		//if (Config.mysqlEnabled == true){
 			
-		}else{
-			sqlite.saveLifestone(block);
-		}
+		//}else{
+			sqlite.saveLifestone(world, X, Y, Z);
+		//}
 
 	}
 	
-	public void saveLifestone(final Block block, Boolean async) {
+	public void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
 		if (async == true){
 			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					sqlite.saveLifestone(block);
+					sqlite.saveLifestone(world, X, Y, Z);
 				}
 			});
 			
 		}else{
-			saveLifestone(block);
+			sqlite.saveLifestone(world, X, Y, Z);
+		}
+	}
+	
+	public void removeLifestone(String world, int X, int Y, int Z){
+		//if (Config.mysqlEnabled == true){
+			
+		//}else{
+			sqlite.removeLifestone(world, X, Y, Z);
+		//}
+
+	}
+	
+	public void removeLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
+		if (async == true){
+			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+				public void run() {
+					sqlite.removeLifestone(world, X, Y, Z);
+				}
+			});
+			
+		}else{
+			sqlite.removeLifestone(world, X, Y, Z);
 		}
 	}
 	
 	public void loadLifestones() {
-		if (Config.mysqlEnabled == true){
+		//if (Config.mysqlEnabled == true){
 			
-		}else{
+		//}else{
 			sqlite.loadLifestones();
-		}
+		//}
 	}
 	
 	public void loadLifestones(Boolean async) {

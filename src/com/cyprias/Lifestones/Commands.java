@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.cyprias.Lifestones.Config.lifestoneStructure;
+import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 
 public class Commands implements CommandExecutor {
@@ -35,8 +36,11 @@ public class Commands implements CommandExecutor {
 					rBlock.setTypeId(lsBlock.bID);
 					rBlock.setData(lsBlock.bData);
 				}
-				plugin.database.saveLifestone(pBlock, Config.preferAsyncDBCalls);
-				//plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
+				
+				
+				plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
+				plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
+				
 				return true;
 			}else if (args[0].equalsIgnoreCase("sql")){
 				plugin.database.loadLifestones(Config.preferAsyncDBCalls);
