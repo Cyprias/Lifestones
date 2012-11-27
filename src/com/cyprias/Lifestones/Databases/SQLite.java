@@ -177,6 +177,12 @@ public class SQLite {
 		}
 	}
 	
+	public void saveAttunment(String bWorld, int bX, int bY, int bZ) {
+		
+		
+	}
+	
+	
 	public void removeLifestone(String bWorld, int bX, int bY, int bZ) {
 		
 		try {

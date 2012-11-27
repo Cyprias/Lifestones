@@ -66,6 +66,30 @@ public class Database {
 		}
 	}
 	
+	public void saveAttunment(String world, int X, int Y, int Z){
+		//if (Config.mysqlEnabled == true){
+			
+		//}else{
+			sqlite.saveAttunment(world, X, Y, Z);
+		//}
+
+	}
+	
+	public void saveAttunment(final String world, final int X, final int Y, final int Z, Boolean async) {
+		if (async == true){
+			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+				public void run() {
+					sqlite.saveAttunment(world, X, Y, Z);
+				}
+			});
+			
+		}else{
+			sqlite.saveAttunment(world, X, Y, Z);
+		}
+	}
+	
+	
+	
 	public void loadLifestones() {
 		//if (Config.mysqlEnabled == true){
 			

@@ -2,6 +2,7 @@ package com.cyprias.Lifestones;
 
 import java.util.logging.Logger;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 
@@ -48,8 +50,23 @@ public class Events implements Listener {
 			//log.info("cBlock: " + cBlock.getType());
 			if (cBlock.getTypeId() == 77 || cBlock.getTypeId() == 143){//BUTTON
 				if (plugin.isLifestone(cBlock) == true){
-					plugin.sendMessage(event.getPlayer(), "You hit a LS button!");
+					Player player = event.getPlayer();
+					//plugin.sendMessage(player,  "You hit a LS button!");
 					
+					Location pLoc = player.getLocation();
+					String pWorld = pLoc.getWorld().getName();
+					double pX = pLoc.getX();
+					double pY = pLoc.getY();
+					double pZ = pLoc.getZ();
+					
+					float pPitch = pLoc.getPitch();
+					float pYaw = pLoc.getYaw();
+					
+					String pName = player.getName();
+					
+					
+					Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pPitch, pYaw));
+					plugin.sendMessage(player, "Attuned to lifestone");
 				}
 			}
 		}

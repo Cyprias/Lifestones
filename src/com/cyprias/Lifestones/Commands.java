@@ -1,12 +1,14 @@
 package com.cyprias.Lifestones;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Config.lifestoneStructure;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
@@ -21,6 +23,24 @@ public class Commands implements CommandExecutor {
 		//final String message = getFinalArg(args, 0);
 		//plugin.info(sender.getName() + ": /" + cmd.getName() + " " + message);
 	
+		if (cmd.getName().equals("lifestone")){
+			if (!(Attunements.players.containsKey(sender.getName()))){
+				plugin.sendMessage(sender, "You have not attuned to a lifestone yet.");
+				return true;
+			}
+			
+			Attunement attunement = Attunements.players.get(sender.getName());
+			
+			
+			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw, attunement.pitch);
+			
+			Player player = (Player) sender;
+			player.teleport(loc);
+			plugin.sendMessage(sender, "Recalled to lifestone");
+			
+			
+		}else if (cmd.getName().equals("lifestones")){
+		
 		if (args.length > 0){
 			if (args[0].equalsIgnoreCase("create")){
 				
@@ -52,6 +72,7 @@ public class Commands implements CommandExecutor {
 				return true;
 				//sqliteTest1
 			}
+		}
 		}
 		
 		return false;

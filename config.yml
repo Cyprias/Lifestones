@@ -9,3 +9,4 @@ mysql:
 preferAsyncDBCalls: true
 setUnregisteredLifestonesToAir: true
 protectLifestoneRadius: 3
+debugMessages: false
