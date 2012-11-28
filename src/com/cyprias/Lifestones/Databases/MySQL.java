@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.bukkit.command.CommandSender;
+
 import com.cyprias.Lifestones.Attunements;
 import com.cyprias.Lifestones.Config;
 import com.cyprias.Lifestones.Database;
@@ -159,6 +161,8 @@ public class MySQL {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	public void loadLifestones() {
 		String table = Config.sqlPrefix + "Lifestones";
 

@@ -14,3 +14,4 @@ attuneDelay: 5
 recallDelay: 10
 protectPlayerAfterRecallDuration: 10
 randomTPRadius: 1000
+rowsPerPage: 10

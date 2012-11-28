@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -118,7 +119,7 @@ public class Commands implements CommandExecutor {
 					plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 
 					return true;
-				}	if (args[0].equalsIgnoreCase("reload")) {
+				}	else if (args[0].equalsIgnoreCase("reload")) {
 					if (!hasCommandPermission(sender, "lifestones.reload")) {
 						return true;
 					}
@@ -128,8 +129,7 @@ public class Commands implements CommandExecutor {
 					
 					plugin.sendMessage(sender, "Plugin reloaded.");
 					return true;
-				}
-				if (args[0].equalsIgnoreCase("randomtp")) {
+				} else if (args[0].equalsIgnoreCase("randomtp")) {
 					if (!hasCommandPermission(sender, "lifestones.randomtp")) {
 						return true;
 					}
@@ -142,6 +142,82 @@ public class Commands implements CommandExecutor {
 						plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + tpLoc.getBlockX() + ChatColor.GRAY+"x" +ChatColor.GREEN + tpLoc.getBlockZ() + ChatColor.GRAY+ ".");
 						return true;
 					}
+				} else if (args[0].equalsIgnoreCase("list")) {
+					if (!hasCommandPermission(sender, "lifestones.list")) {
+						return true;
+					}
+					
+					int page = 1;
+					if (args.length > 1) {// && args[1].equalsIgnoreCase("compact"))
+						if (plugin.isInt(args[1])) {
+							page = Math.abs(Integer.parseInt(args[1]));
+						} else {
+							plugin.sendMessage(sender, "Invalid page number: " + args[1]);
+							return true;
+						}
+					}
+					
+					
+					
+					int rows = plugin.lifestoneLocations.size();
+					int maxPages = (int) Math.ceil((float) rows / (float) Config.rowsPerPage);
+
+					if (rows > Config.rowsPerPage){
+						plugin.sendMessage(sender, "Page " + (page) + "/" + (maxPages));
+					}
+					
+					int start = ((page-1) * Config.rowsPerPage);
+					int end = start + Config.rowsPerPage;
+					if (end > rows)
+						end = rows;
+					
+					lifestoneLoc ls; 
+					for (int i = start; i < end; i++) {
+						ls = plugin.lifestoneLocations.get(i);
+						plugin.sendMessage(sender, (i+1) + ": " + ls.world + " " + ls.X + " " + ls.Y + " " + ls.Z, false);
+					}
+					return true;
+				} else if (args[0].equalsIgnoreCase("tp")) {
+					if (!hasCommandPermission(sender, "lifestones.tp")) {
+						return true;
+					}
+					int lsID;
+					if (args.length > 1) {// && args[1].equalsIgnoreCase("compact"))
+						if (plugin.isInt(args[1])) {
+							lsID = Math.abs(Integer.parseInt(args[1]));
+						} else {
+							plugin.sendMessage(sender, "Invalid id: " + args[1]);
+							return true;
+						}
+					}else{
+						plugin.sendMessage(sender, "Include a id number from the lifestone list.");
+						return true;
+					}
+						
+					lsID-=1;
+					
+					if (lsID > plugin.lifestoneLocations.size()){
+						plugin.sendMessage(sender, lsID + " is too high!");
+						return true;
+					}
+					
+					lifestoneLoc lsLoc = plugin.lifestoneLocations.get(lsID);
+					
+					Block lsBlock = plugin.getServer().getWorld(lsLoc.world).getBlockAt(lsLoc.X, lsLoc.Y, lsLoc.Z);
+					Block rBlock;
+					Player player = (Player) sender;
+					for (int y=1; y < (256-lsBlock.getY()); y++){
+						rBlock = lsBlock.getRelative(0, y, 0);
+						if (rBlock.getTypeId() == 0){
+							
+							player.teleport(new Location(player.getWorld(), rBlock.getX() + .5, rBlock.getY() + 1, rBlock.getZ() + .5));
+							plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + rBlock.getX() + ChatColor.GRAY+"x" +ChatColor.GREEN + rBlock.getZ() + ChatColor.GRAY+ ".");
+							
+							return true;
+						}
+					}
+						
+					
 					
 				}
 			}
@@ -153,6 +229,11 @@ public class Commands implements CommandExecutor {
 			
 			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
 				plugin.sendMessage(sender, "§a/" + commandLabel + " create §a- Create a lifestone at your location.", true, false);
+			if (plugin.hasPermission(sender, "lifestones.list") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " list §a- List all lifestone locations.", true, false);
+			if (plugin.hasPermission(sender, "lifestones.tp") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " tp [#] §a- Teleport to a lifestone.", true, false);
+			
 			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
 				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §a- Reload the plugin.", true, false);
 			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
@@ -163,7 +244,7 @@ public class Commands implements CommandExecutor {
 
 		return false;
 	}
-
+	
 	public static String getFinalArg(final String[] args, final int start) {
 		final StringBuilder bldr = new StringBuilder();
 		for (int i = start; i < args.length; i++) {

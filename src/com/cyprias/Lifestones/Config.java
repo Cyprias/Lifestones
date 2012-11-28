@@ -17,7 +17,7 @@ public class Config {
 
 	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion;
 	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort;
-	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius;
+	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 
 	public Config(Lifestones plugin) {
 		this.plugin = plugin;
@@ -54,6 +54,8 @@ public class Config {
 		recallDelay = config.getInt("recallDelay");
 		protectPlayerAfterRecallDuration = config.getInt("protectPlayerAfterRecallDuration");
 		randomTPRadius = config.getInt("randomTPRadius");
+		
+		rowsPerPage = config.getInt("rowsPerPage");
 		
 		loadStrucutre();
 	}

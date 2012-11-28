@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 
 import com.cyprias.Lifestones.Databases.MySQL;
@@ -167,4 +168,5 @@ public class Database {
 			loadLifestones();
 		}
 	}
+	
 }
