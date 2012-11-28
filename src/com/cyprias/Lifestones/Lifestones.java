@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.cyprias.Lifestones.Config.lifestoneStructure;
+import com.wimbli.WorldBorder.WorldBorder;
 
 public class Lifestones extends JavaPlugin {
 	private String stPluginEnabled = "§f%s §7v§f%s §7is enabled.";
@@ -25,7 +28,9 @@ public class Lifestones extends JavaPlugin {
 	public YML yml;
 	public Events events;
 	public Database database;
-
+	public HashMap<String, Double> playerProtections = new HashMap<String, Double>();
+	private WorldBorder wb;
+	
 	public void onLoad() {
 		pluginName = getDescription().getName();
 
@@ -37,14 +42,18 @@ public class Lifestones extends JavaPlugin {
 		this.database = new Database(this);
 
 		this.database.createTables(Config.preferAsyncDBCalls);
-		if (Config.checkForNewVersion == true)
-			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
+
 		
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
 		} catch (IOException e) {
 		}
+		
+		if (Config.checkForNewVersion == true)
+			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
+		
+		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
 	}
 
 	public void onEnable() {
@@ -266,4 +275,78 @@ public class Lifestones extends JavaPlugin {
 		return null;
 	}
 
+	
+	public Location getRandomLocation(World world){
+		
+		int rad = Config.randomTPRadius;
+		double bX = 0;
+		double bZ = 0;
+		if (wb != null){
+			rad = wb.GetWorldBorder(world.getName()).getRadius();
+			bX = wb.GetWorldBorder(world.getName()).getX();
+			bZ = wb.GetWorldBorder(world.getName()).getZ();
+		}
+		
+		
+		
+		Double rX = (bX-rad) + (Math.random() * (rad*2));
+		Double rZ = (bZ-rad) + (Math.random() * (rad*2));
+		
+		Block b = getTopBlock(world, (int) Math.round(rX), (int) Math.round(rZ));
+		
+		if (b != null){
+			Location blockLoc;
+			
+			switch (b.getTypeId()){
+			case 1:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 3, blockLoc.getBlockZ() + .5);
+			case 2:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 3:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 12:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 13:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 78:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+				
+			case 79:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+				
+			case 110:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 87:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+			case 121:
+				blockLoc = b.getLocation();
+				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
+				
+			default:
+				return getRandomLocation(world);
+			}
+		}
+		
+		return null;
+	}
+	private Block getTopBlock(World world, int X, int Z){
+		Block b;
+		for (int i=255; i>0; i--){
+			b = world.getBlockAt(X, i, Z);
+			if (b.getTypeId() != 0){
+				//plugin.info("found" + b.getType() + " (" + b.getTypeId() + ")");
+				return b; //world.getBlockAt(X, i, Z);
+			}
+		}
+		return null;
+	}
 }

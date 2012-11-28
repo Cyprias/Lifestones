@@ -10,5 +10,7 @@ preferAsyncDBCalls: true
 setUnregisteredLifestonesToAir: true
 protectLifestoneRadius: 3
 debugMessages: false
-attuneDelay: 100
-recallDelay: 200
+attuneDelay: 5
+recallDelay: 10
+protectPlayerAfterRecallDuration: 10
+randomTPRadius: 1000

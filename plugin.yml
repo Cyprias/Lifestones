@@ -31,3 +31,4 @@ permissions:
       lifestones.breaklifestone: true
       lifestones.modifyprotectedblocks: true
       lifestones.reload: true
+      lifestones.randomtp: true

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +22,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -56,7 +58,7 @@ public class Events implements Listener {
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
 
-			plugin.sendMessage(player, "Attuning to lifestone in " + (Config.attuneDelay / 20) + " seconds, move to cancel.");
+			plugin.sendMessage(player, "Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel.");
 		}
 
 		public void run() {
@@ -103,7 +105,7 @@ public class Events implements Listener {
 						return;
 					}
 
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay*20L);
 				}
 			}
 		}
@@ -117,6 +119,7 @@ public class Events implements Listener {
 			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw,
 				attunement.pitch);
 			event.setRespawnLocation(loc);
+			plugin.playerProtections.put(event.getPlayer().getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}
 	}
 
@@ -151,6 +154,8 @@ public class Events implements Listener {
 
 			if (plugin.isProtected(block)) {
 				event.setCancelled(true);
+				plugin.debug("Blocking piston extend at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
+
 				return;
 			}
 		}
@@ -170,6 +175,7 @@ public class Events implements Listener {
 
 			if (plugin.isProtected(block)) {
 				event.setCancelled(true);
+				plugin.debug("Blocking piston extend at " +block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
 				break;
 			}
 		}
@@ -191,7 +197,9 @@ public class Events implements Listener {
 
 		for (Block block : event.blockList()) {
 			if (plugin.isProtected(block)) {
+				plugin.debug("Blocking explostion at " + block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
 				event.setCancelled(true);
+				return;
 			}
 		}
 	}
@@ -219,6 +227,7 @@ public class Events implements Listener {
 		Block moved = piston.getRelative(direction, 2);
 
 		if (plugin.isProtected(moved)) {
+			plugin.debug("Blocking piston retract at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
 			event.setCancelled(true);
 		}
 
@@ -301,5 +310,27 @@ public class Events implements Listener {
 				plugin.info(info.getLink());
 			}
 		}
+	}
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if (event.isCancelled())
+			return;
+		
+		if (event.getEntity().getType() == EntityType.PLAYER) {
+			Player player = (Player) event.getEntity();
+			
+			if (plugin.playerProtections.containsKey(player.getName())){
+				Double recalled = plugin.playerProtections.get(player.getName());
+				
+				if (recalled >= plugin.getUnixTime()){
+					plugin.debug("Protecting recalled player " + player.getName());
+					event.setCancelled(true);
+					return;
+				}
+				
+			}
+			
+		}
+		
 	}
 }

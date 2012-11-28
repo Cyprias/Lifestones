@@ -1,5 +1,7 @@
 package com.cyprias.Lifestones;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -32,7 +34,7 @@ public class Commands implements CommandExecutor {
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
 
-			plugin.sendMessage(player, "Recalling to lifestone in " + (Config.recallDelay / 20) + " seconds, move to cancel.");
+			plugin.sendMessage(player, "Recalling to lifestone in " + Config.recallDelay + " seconds, move to cancel.");
 		}
 
 		public void run() {
@@ -48,9 +50,15 @@ public class Commands implements CommandExecutor {
 
 			player.teleport(loc);
 			plugin.sendMessage(player, "Recalled to lifestone");
+			
+			
+			plugin.playerProtections.put(player.getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
+			//protectPlayerAfterRecallDuration
 		}
 	}
 
+	
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		// final String message = getFinalArg(args, 0);
 		// plugin.info(sender.getName() + ": /" + cmd.getName() + " " +
@@ -68,11 +76,11 @@ public class Commands implements CommandExecutor {
 			Player player = (Player) sender;
 
 			recallTask task = new recallTask(player);
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.recallDelay);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.recallDelay*20L);
 			return true;
 
 		} else if (cmd.getName().equals("lifestones")) {
-
+			
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("create")) {
 					if (!hasCommandPermission(sender, "lifestones.create")) {
@@ -112,6 +120,21 @@ public class Commands implements CommandExecutor {
 					plugin.sendMessage(sender, "Plugin reloaded.");
 					return true;
 				}
+				if (args[0].equalsIgnoreCase("randomtp")) {
+					if (!hasCommandPermission(sender, "lifestones.randomtp")) {
+						return true;
+					}
+					Player player = (Player) sender;
+					
+					Location tpLoc = plugin.getRandomLocation(player.getWorld());
+					
+					if (tpLoc != null){
+						player.teleport(tpLoc);
+						plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + tpLoc.getBlockX() + ChatColor.GRAY+"x" +ChatColor.GREEN + tpLoc.getBlockZ() + ChatColor.GRAY+ ".");
+						return true;
+					}
+					
+				}
 			}
 			
 			plugin.sendMessage(sender, plugin.pluginName + " v" + plugin.getDescription().getVersion());
@@ -123,7 +146,8 @@ public class Commands implements CommandExecutor {
 				plugin.sendMessage(sender, "§a/" + commandLabel + " create §a- Create a lifestone at your location.", true, false);
 			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
 				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §a- Reload the plugin.", true, false);
-
+			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " randomtp §a- Teleport to a random location in the world.", true, false);
 			
 			return true;
 		}
