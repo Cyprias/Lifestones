@@ -135,7 +135,14 @@ public class Events implements Listener {
 	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		if (event.isCancelled())
 			return;
-		plugin.debug(event.getEventName());
+		//plugin.debug(event.getEventName());
+		
+		Block block = event.getBlock();
+		if (plugin.isProtected(block)) {
+			event.setCancelled(true);
+			plugin.debug("Blocking enty change block at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
+			return;
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -186,7 +193,13 @@ public class Events implements Listener {
 	public void onBlockBurn(BlockBurnEvent event) {
 		if (event.isCancelled())
 			return;
-		plugin.debug(event.getEventName());
+		//plugin.debug(event.getEventName());
+		Block block = event.getBlock();
+		if (plugin.isProtected(block)) {
+			plugin.debug("Blocking block burn at " + block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+			event.setCancelled(true);
+			return;
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
