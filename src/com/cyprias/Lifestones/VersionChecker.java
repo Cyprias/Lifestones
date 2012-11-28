@@ -14,24 +14,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class VersionChecker {
-	private String curseRSS;
-	//private JavaPlugin plugin;
-	//private Logger log = Logger.getLogger("Minecraft");
-
-	private String pluginName;
-
-	public VersionChecker(JavaPlugin plugin, String curseRSS) {
-	//	this.plugin = plugin;
-		this.curseRSS = curseRSS;
-		this.pluginName = plugin.getName();
-	}
-
 	public static void retreiveVersionInfo(JavaPlugin plugin, String curseRSS, Object... args) {
-		
-		
 		getVersionInfoTask task = new getVersionInfoTask(plugin.getServer().getPluginManager(), plugin.getDescription().getName(), curseRSS);
 		int taskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, task, 0L);
-		task.setId(taskID);
 		task.setArgs(args);
 	}
 
@@ -87,14 +72,10 @@ public class VersionChecker {
 	}
 
 	private static class getVersionInfoTask implements Runnable {
-		//private VersionChecker me;
 		private Object[] args;
-
 		private String pluginName, curseRSS;
-
 		private PluginManager pm;
-		public getVersionInfoTask(PluginManager pm, String pluginName, String curseRSS) { //VersionChecker me2, 
-			//this.me = me2;
+		public getVersionInfoTask(PluginManager pm, String pluginName, String curseRSS) {
 			this.pm = pm;
 			this.pluginName = pluginName;
 			this.curseRSS = curseRSS;
@@ -103,11 +84,6 @@ public class VersionChecker {
 			this.args = args;
 		}
 
-		
-		private int taskID;
-		public void setId(int n) {
-			this.taskID = n;
-		}
 
 		@Override
 		public void run() {
