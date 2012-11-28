@@ -185,14 +185,14 @@ public class Commands implements CommandExecutor {
 
 						if (Config.lookAtNearestLS == true){
 							Location pLoc = player.getLocation();
-							Location lsLoc = new Location(player.getWorld(), lifestones.get(0).X,lifestones.get(0).Y,lifestones.get(0).Z);
+							Location lsLoc = new Location(player.getWorld(), lifestones.get(0).X + 0.5,lifestones.get(0).Y,lifestones.get(0).Z + 0.5);
 	
 							float yaw = MathUtil.getLookAtYaw(pLoc, lsLoc) + 90;
 							pLoc.setYaw(yaw);
 							
-							double motX = lifestones.get(0).X - player.getLocation().getX();
-							double motY = lifestones.get(0).Y - player.getLocation().getY();
-							double motZ = lifestones.get(0).Z - player.getLocation().getZ();
+							double motX = (lifestones.get(0).X + 0.5) - player.getLocation().getX();
+							double motY = (lifestones.get(0).Y) - player.getLocation().getY();
+							double motZ = (lifestones.get(0).Z + 0.5) - player.getLocation().getZ();
 							
 							float pitch = MathUtil.getLookAtPitch(motX, motY, motZ);
 						
@@ -288,19 +288,22 @@ public class Commands implements CommandExecutor {
 			plugin.sendMessage(sender, plugin.pluginName + " v" + plugin.getDescription().getVersion());
 			
 			if (plugin.hasPermission(sender, "lifestones.recall") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/lifestone §f- Recall to your lifestone.", true, false);
+				plugin.sendMessage(sender, "§a/lifestone §7- Recall to your lifestone.", true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " create §a- Create a lifestone at your location.", true, false);
+				plugin.sendMessage(sender, "§a/" + commandLabel + " create §7- Create a lifestone at your location.", true, false);
 			if (plugin.hasPermission(sender, "lifestones.list") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " list §a- List all lifestone locations.", true, false);
+				plugin.sendMessage(sender, "§a/" + commandLabel + " list §7- List all lifestone locations.", true, false);
 			if (plugin.hasPermission(sender, "lifestones.tp") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " tp [#] §a- Teleport to a lifestone.", true, false);
+				plugin.sendMessage(sender, "§a/" + commandLabel + " tp [#] §7- Teleport to a lifestone.", true, false);
+			
+			if (plugin.hasPermission(sender, "lifestones.near") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " near §7- Show the nearest lifestone.", true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §a- Reload the plugin.", true, false);
+				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §7- Reload the plugin.", true, false);
 			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " randomtp §a- Teleport to a random location in the world.", true, false);
+				plugin.sendMessage(sender, "§a/" + commandLabel + " randomtp §7- Teleport to a random location in the world.", true, false);
 			
 			return true;
 		}

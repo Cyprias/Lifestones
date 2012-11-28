@@ -76,9 +76,8 @@ public class MathUtil {
 		return rval;
 	}
 	
-	private static final float RAD_TO_DEG = 180.0f / 3.1415926f;
-	public static double degrees(double d) {
-		return d * RAD_TO_DEG;
+	public static double degrees(double r) {
+		return r * RADTODEG;
 	}
 
 	public static double AngleCoordsToCoords(double fX, double fY, double tX, double tY) {
@@ -93,25 +92,6 @@ public class MathUtil {
 		if (deg < 0)
 			deg += 360;
 
-		/*
-		 * if (deg < 22.5) return "North";
-		 * 
-		 * if (deg < 67.5) return "NE";
-		 * 
-		 * if (deg < 112.5) return "East";
-		 * 
-		 * if (deg < 157.5) return "SE";
-		 * 
-		 * if (deg < 202.5) return "South";
-		 * 
-		 * if (deg < 247.5) return "SW"; if (deg < 292.5) return "West"; if (deg
-		 * < 337.5) return "NW";
-		 * 
-		 * if (deg < 382.5) return "North"; /*
-		 * 
-		 * 
-		 * /*
-		 */
 		if (deg < 45)
 			return "North";
 
