@@ -17,19 +17,11 @@ public class Database {
 	public MySQL mysql;
 	public Database(Lifestones plugin) {
 		this.plugin = plugin;
-		sqlite = new SQLite(this, plugin.getDataFolder());
+		this.sqlite = new SQLite(this, plugin.getDataFolder());
 		this.mysql = new MySQL(this, plugin.getDataFolder());
 	}
 	
-	public void saveLifestone(String world, int X, int Y, int Z){
-		if (Config.mysqlEnabled == true){
-			mysql.saveLifestone(world, X, Y, Z);
-		}else{
-			sqlite.saveLifestone(world, X, Y, Z);
-		}
 
-	}
-	
 	public void createTables(){
 		if (Config.mysqlEnabled == true){
 			mysql.createTables();
@@ -69,6 +61,14 @@ public class Database {
 		}
 	}
 	
+	public void saveLifestone(String world, int X, int Y, int Z){
+		if (Config.mysqlEnabled == true){
+			mysql.saveLifestone(world, X, Y, Z);
+		}else{
+			sqlite.saveLifestone(world, X, Y, Z);
+		}
+
+	}
 	public void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
 		if (async == true){
 			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {

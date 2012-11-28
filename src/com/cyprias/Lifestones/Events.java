@@ -25,13 +25,6 @@ public class Events implements Listener {
 		this.plugin = plugin;
 	}
 	
-	public Boolean isLifestoneButton(Block button){
-		if (true)
-			return true;
-		
-		return false;
-	}
-	
 	
 	/*@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockRedstone(BlockRedstoneEvent event) {
@@ -97,8 +90,7 @@ public class Events implements Listener {
 						return;
 					}
 
-					attuneTask task = new attuneTask(player);
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.attuneDelay);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,  new attuneTask(player), Config.attuneDelay);
 				}
 			}
 		}
@@ -183,7 +175,7 @@ public class Events implements Listener {
 		if (event.getPluginName() == plugin.getName()) {
 			VersionChecker.versionInfo info = event.getVersionInfo(0);
 			String curVersion = plugin.getDescription().getVersion();
-			int compare = plugin.versionChecker.compareVersions(curVersion, info.getTitle());
+			int compare = VersionChecker.compareVersions(curVersion, info.getTitle());
 			if (compare < 0) {
 				plugin.info("We're running v" + curVersion + ", v" + info.getTitle() + " is available");
 				plugin.info(info.getLink());

@@ -25,59 +25,59 @@ public class Lifestones extends JavaPlugin {
 	public YML yml;
 	public Events events;
 	public Database database;
-	public VersionChecker versionChecker;
+
 	public void onLoad() {
 		pluginName = getDescription().getName();
-		
+
 		this.yml = new YML(this);
 		this.config = new Config(this);
 		config.reloadOurConfig();
 		this.commands = new Commands(this);
 		this.events = new Events(this);
 		this.database = new Database(this);
-		
+
 		this.database.createTables(Config.preferAsyncDBCalls);
+		if (Config.checkForNewVersion == true)
+			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		
-		this.versionChecker = new VersionChecker(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
 		} catch (IOException e) {
 		}
 	}
-	
+
 	public void onEnable() {
 		config.reloadOurConfig();
 		getCommand("lifestone").setExecutor(this.commands);
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
-		
+
 		database.loadDatabases(Config.preferAsyncDBCalls);
-		
-		if (Config.checkForNewVersion == true)
-			this.versionChecker.retreiveVersionInfo();
-		
-		
+
 		info(String.format(stPluginEnabled, pluginName, this.getDescription().getVersion()));
 	}
+
 	public void onDisable() {
-	
+
 		getCommand("lifestones").setExecutor(null);
 	}
-	
+
 	private Logger log = Logger.getLogger("Minecraft");
 
 	public void info(String msg) {
 		getServer().getConsoleSender().sendMessage(chatPrefix + msg);
 	}
+
 	public void debug(String msg) {
-		if (Config.debugMessages == true){
-			
-			info(ChatColor.DARK_GRAY + "[Debug] " +ChatColor.WHITE + msg);
+		if (Config.debugMessages == true) {
+
+			info(ChatColor.DARK_GRAY + "[Debug] " + ChatColor.WHITE + msg);
 		}
 	}
-//
-	
+
+	//
+
 	public boolean hasPermission(CommandSender sender, String node) {
 		if (!(sender instanceof Player)) {
 			return true;
@@ -103,7 +103,7 @@ public class Lifestones extends JavaPlugin {
 
 		return player.hasPermission(node);
 	}
-	
+
 	public void sendMessage(CommandSender sender, String message, Boolean showConsole, Boolean sendPrefix) {
 		if (sender instanceof Player && showConsole == true) {
 			info("§e" + sender.getName() + "->§f" + message);
@@ -122,39 +122,40 @@ public class Lifestones extends JavaPlugin {
 	public void sendMessage(CommandSender sender, String message) {
 		sendMessage(sender, message, true);
 	}
-	
-	
+
 	/**/
-	static public class  lifestoneLoc {
+	static public class lifestoneLoc {
 		String world;
 		int X, Y, Z;
-		public lifestoneLoc(String world, int X, int Y, int Z){
+
+		public lifestoneLoc(String world, int X, int Y, int Z) {
 			this.world = world;
 			this.X = X;
 			this.Y = Y;
 			this.Z = Z;
 		}
 	}
-	
+
 	public static double getUnixTime() {
 		return (System.currentTimeMillis() / 1000D);
 	}
-	
+
 	public ArrayList<lifestoneLoc> lifestoneLocations = new ArrayList<lifestoneLoc>();
-	public void regsterLifestone(final lifestoneLoc lsLoc){
-		for (int i=0;i<lifestoneLocations.size();i++){
-			if (lifestoneLocations.get(i).world.equals(lsLoc.world)){
-				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z){
-			//		info("LS already in aray...");
+
+	public void regsterLifestone(final lifestoneLoc lsLoc) {
+		for (int i = 0; i < lifestoneLocations.size(); i++) {
+			if (lifestoneLocations.get(i).world.equals(lsLoc.world)) {
+				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z) {
+					// info("LS already in aray...");
 					return;
 				}
 			}
 		}
 		lifestoneLocations.add(lsLoc);
-		
+
 		debug("Registered LS at " + lsLoc.world + ", " + lsLoc.X + ", " + lsLoc.Y + ", " + lsLoc.Z);
-		//isLifestoneCache.clear();
-		
+		// isLifestoneCache.clear();
+
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
 				cacheSurroundBlocks(lsLoc);
@@ -164,91 +165,105 @@ public class Lifestones extends JavaPlugin {
 
 	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public static HashMap<Block, Block> isProtectedCache = new HashMap<Block, Block>();
-	
-	private void cacheSurroundBlocks(lifestoneLoc loc){
-		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X , loc.Y, loc.Z);
+
+	private void cacheSurroundBlocks(lifestoneLoc loc) {
+		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X, loc.Y, loc.Z);
 		lifestoneStructure lsBlock;
-		for (int b=0; b<Config.structureBlocks.size();b++){
+		for (int b = 0; b < Config.structureBlocks.size(); b++) {
 			lsBlock = Config.structureBlocks.get(b);
-			isLifestoneCache.put(getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ), cBlock);
-			//info("caching " + (loc.X+lsBlock.rX) +", " + (loc.Y+lsBlock.rY) + ", " + (loc.Z+lsBlock.rZ));
+			isLifestoneCache.put(getServer().getWorld(loc.world).getBlockAt(loc.X + lsBlock.rX, loc.Y + lsBlock.rY, loc.Z + lsBlock.rZ), cBlock);
+			// info("caching " + (loc.X+lsBlock.rX) +", " + (loc.Y+lsBlock.rY) +
+			// ", " + (loc.Z+lsBlock.rZ));
 		}
-		
-		
-		
-	    for (int y_iter = cBlock.getX()+Config.protectLifestoneRadius; y_iter > cBlock.getX()-Config.protectLifestoneRadius; y_iter--) {
-	        for (int x_iter = cBlock.getY()+Config.protectLifestoneRadius; x_iter > cBlock.getY()-Config.protectLifestoneRadius; x_iter--) {
-	          for (int z_iter = cBlock.getZ()+Config.protectLifestoneRadius; z_iter > cBlock.getZ()-Config.protectLifestoneRadius; z_iter--) {
-	        	  
-	        	  isProtectedCache.put(getServer().getWorld(loc.world).getBlockAt(y_iter , x_iter, z_iter), cBlock);
-	        //	  info("protecting " + y_iter +", " +x_iter + ", " + z_iter);
-	        	  
-	          }
-	        }
-	    }
+
+		for (int y_iter = cBlock.getX() + Config.protectLifestoneRadius; y_iter > cBlock.getX() - Config.protectLifestoneRadius; y_iter--) {
+			for (int x_iter = cBlock.getY() + Config.protectLifestoneRadius; x_iter > cBlock.getY() - Config.protectLifestoneRadius; x_iter--) {
+				for (int z_iter = cBlock.getZ() + Config.protectLifestoneRadius; z_iter > cBlock.getZ() - Config.protectLifestoneRadius; z_iter--) {
+
+					isProtectedCache.put(getServer().getWorld(loc.world).getBlockAt(y_iter, x_iter, z_iter), cBlock);
+					// info("protecting " + y_iter +", " +x_iter + ", " +
+					// z_iter);
+
+				}
+			}
+		}
 	}
-	
-	private void removeCachedSurroundBlocks(lifestoneLoc loc){
-		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X , loc.Y, loc.Z);
+
+	private void removeCachedSurroundBlocks(lifestoneLoc loc) {
+		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X, loc.Y, loc.Z);
 		lifestoneStructure lsBlock;
 		Block rBlock;
-		//for (int b=0; b<Config.structureBlocks.size();b++){
-		for (int b=Config.structureBlocks.size()-1; b>= 0;b--){//Backwards so our buttons are removed first, not fall on the ground.
+		// for (int b=0; b<Config.structureBlocks.size();b++){
+		for (int b = Config.structureBlocks.size() - 1; b >= 0; b--) {// Backwards
+																		// so
+																		// our
+																		// buttons
+																		// are
+																		// removed
+																		// first,
+																		// not
+																		// fall
+																		// on
+																		// the
+																		// ground.
 			lsBlock = Config.structureBlocks.get(b);
-			//isLifestoneCache.put(cBlock, getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ));
-			rBlock = getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX , loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ);
+			// isLifestoneCache.put(cBlock,
+			// getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX ,
+			// loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ));
+			rBlock = getServer().getWorld(loc.world).getBlockAt(loc.X + lsBlock.rX, loc.Y + lsBlock.rY, loc.Z + lsBlock.rZ);
 			isLifestoneCache.remove(rBlock);
-			if (Config.setUnregisteredLifestonesToAir == true){
+			if (Config.setUnregisteredLifestonesToAir == true) {
 				rBlock.setTypeId(0);
 			}
 		}
-		
-	    for (int y_iter = cBlock.getX()+Config.protectLifestoneRadius; y_iter > cBlock.getX()-Config.protectLifestoneRadius; y_iter--) {
-	        for (int x_iter = cBlock.getY()+Config.protectLifestoneRadius; x_iter > cBlock.getY()-Config.protectLifestoneRadius; x_iter--) {
-	          for (int z_iter = cBlock.getZ()+Config.protectLifestoneRadius; z_iter > cBlock.getZ()-Config.protectLifestoneRadius; z_iter--) {
-	        	  
-	        	  isProtectedCache.remove(getServer().getWorld(loc.world).getBlockAt(y_iter , x_iter, z_iter)); 
-	        //	  info("protecting " + y_iter +", " +x_iter + ", " + z_iter);
-	        	  
-	          }
-	        }
-	    }
+
+		for (int y_iter = cBlock.getX() + Config.protectLifestoneRadius; y_iter > cBlock.getX() - Config.protectLifestoneRadius; y_iter--) {
+			for (int x_iter = cBlock.getY() + Config.protectLifestoneRadius; x_iter > cBlock.getY() - Config.protectLifestoneRadius; x_iter--) {
+				for (int z_iter = cBlock.getZ() + Config.protectLifestoneRadius; z_iter > cBlock.getZ() - Config.protectLifestoneRadius; z_iter--) {
+
+					isProtectedCache.remove(getServer().getWorld(loc.world).getBlockAt(y_iter, x_iter, z_iter));
+					// info("protecting " + y_iter +", " +x_iter + ", " +
+					// z_iter);
+
+				}
+			}
+		}
 	}
-	
-	
-	public void unregsterLifestone(final lifestoneLoc lsLoc){
-		for (int i=0;i<lifestoneLocations.size();i++){
-			if (lifestoneLocations.get(i).world.equals(lsLoc.world)){
-				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z){
+
+	public void unregsterLifestone(final lifestoneLoc lsLoc) {
+		for (int i = 0; i < lifestoneLocations.size(); i++) {
+			if (lifestoneLocations.get(i).world.equals(lsLoc.world)) {
+				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z) {
 					lifestoneLocations.remove(i);
 
 					removeCachedSurroundBlocks(lsLoc);
-					
+
 					return;
 				}
 			}
 		}
-		
+
 	}
-	
-	public Boolean isProtected(Block block){
+
+	public Boolean isProtected(Block block) {
 		if (isProtectedCache.containsKey(block))
 			return true;
 
 		return false;
 	}
-	public Boolean isLifestone(Block block){
+
+	public Boolean isLifestone(Block block) {
 		if (isLifestoneCache.containsKey(block))
 			return true;
 
 		return false;
 	}
-	
-	public Block getLifestoneCenterBlock(Block block){
-		if (isLifestone(block)){
+
+	public Block getLifestoneCenterBlock(Block block) {
+		if (isLifestone(block)) {
 			return isLifestoneCache.get(block);
 		}
 		return null;
 	}
-	
+
 }
