@@ -15,7 +15,7 @@ public class Config {
 	private static Configuration config;
 	
 
-	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion;
+	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS;
 	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort;
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 
@@ -56,6 +56,7 @@ public class Config {
 		randomTPRadius = config.getInt("randomTPRadius");
 		
 		rowsPerPage = config.getInt("rowsPerPage");
+		lookAtNearestLS = config.getBoolean("lookAtNearestLS");
 		
 		loadStrucutre();
 	}

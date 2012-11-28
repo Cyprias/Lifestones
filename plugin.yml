@@ -1,6 +1,6 @@
 name: Lifestones
 main: com.cyprias.Lifestones.Lifestones
-version: 0.2.0
+version: 0.2.1
 
 commands:
   lifestones:
@@ -34,3 +34,4 @@ permissions:
       lifestones.randomtp: true
       lifestones.tp: true
       lifestones.list: true
+      lifestones.near: true

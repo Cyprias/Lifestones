@@ -1,7 +1,10 @@
 package com.cyprias.Lifestones;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -65,10 +68,15 @@ public class Commands implements CommandExecutor {
 		// plugin.info(sender.getName() + ": /" + cmd.getName() + " " +
 		// message);
 
-		if (cmd.getName().equals("lifestone")) {
+		if (commandLabel.equals("lifestone")) {
+			if (args.length > 1) {
+				return onCommand(sender, cmd, "lifestones", args);
+			}
 			if (!hasCommandPermission(sender, "lifestones.recall")) {
 				return true;
 			}
+			
+			
 			
 			if (!(Attunements.players.containsKey(sender.getName()))) {
 				plugin.sendMessage(sender, "You have not attuned to a lifestone yet.");
@@ -80,7 +88,7 @@ public class Commands implements CommandExecutor {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, Config.recallDelay*20L);
 			return true;
 
-		} else if (cmd.getName().equals("lifestones")) {
+		} else if (commandLabel.equals("lifestones")) {
 			
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("create")) {
@@ -142,6 +150,61 @@ public class Commands implements CommandExecutor {
 						plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + tpLoc.getBlockX() + ChatColor.GRAY+"x" +ChatColor.GREEN + tpLoc.getBlockZ() + ChatColor.GRAY+ ".");
 						return true;
 					}
+				} else if (args[0].equalsIgnoreCase("near")) {
+					if (!hasCommandPermission(sender, "lifestones.near")) {
+						return true;
+					}
+					
+					List<lifestoneDistance> lifestones = new ArrayList<lifestoneDistance>();
+					
+					
+					//CompareWarps comparator = new CompareWarps();
+					//Collections.sort(warps, comparator);
+					
+					Player player = (Player) sender;
+					lifestoneLoc ls;
+					double dist;
+					for (int i = 0; i < plugin.lifestoneLocations.size(); i++) {
+						ls = plugin.lifestoneLocations.get(i);
+						if (player.getWorld().getName().equals(ls.world)){
+							dist = player.getLocation().distance(new Location(player.getWorld(), ls.X, ls.Y, ls.Z));
+							lifestones.add(new lifestoneDistance(ls.world, ls.X, ls.Y, ls.Z, dist));
+						}
+					}
+					if (lifestones.size() > 0){
+					
+						compareLifestones comparator = new compareLifestones();
+						Collections.sort(lifestones, comparator);
+					
+						double pX = player.getLocation().getX();
+						double pZ = player.getLocation().getZ();
+						
+						String sDir = MathUtil.DegToDirection(MathUtil.AngleCoordsToCoords(pX, pZ, lifestones.get(0).X, lifestones.get(0).Z));
+
+						plugin.sendMessage(sender, "Nearest lifestone is at " + lifestones.get(0).X + " " + lifestones.get(0).Y + " " + lifestones.get(0).Z + ", " + Math.round(lifestones.get(0).distance) + " blocks " + sDir + ".");
+
+						if (Config.lookAtNearestLS == true){
+							Location pLoc = player.getLocation();
+							Location lsLoc = new Location(player.getWorld(), lifestones.get(0).X,lifestones.get(0).Y,lifestones.get(0).Z);
+	
+							float yaw = MathUtil.getLookAtYaw(pLoc, lsLoc) + 90;
+							pLoc.setYaw(yaw);
+							
+							double motX = lifestones.get(0).X - player.getLocation().getX();
+							double motY = lifestones.get(0).Y - player.getLocation().getY();
+							double motZ = lifestones.get(0).Z - player.getLocation().getZ();
+							
+							float pitch = MathUtil.getLookAtPitch(motX, motY, motZ);
+						
+							pLoc.setPitch(pitch);
+							
+							player.teleport(pLoc);
+						}
+						
+					}else{
+						plugin.sendMessage(sender, "There are no lifestones near you.");
+					}
+					return true;
 				} else if (args[0].equalsIgnoreCase("list")) {
 					if (!hasCommandPermission(sender, "lifestones.list")) {
 						return true;
@@ -265,4 +328,32 @@ public class Commands implements CommandExecutor {
 		return false;
 	}
 
+	public class lifestoneDistance extends lifestoneLoc {
+		double distance;
+		public lifestoneDistance(String world, int X, int Y, int Z, double distance) {
+			super(world, X, Y, Z);
+			// TODO Auto-generated constructor stub
+			this.distance = distance;
+		}
+
+	}
+	
+	/**/
+	public class compareLifestones implements Comparator<lifestoneDistance> {
+
+		@Override
+		public int compare(lifestoneDistance o1, lifestoneDistance o2) {
+			if (o1.distance > o2.distance) {
+				return +1;
+			} else if (o1.distance < o2.distance) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+
+	}
+	
+
+	
 }
