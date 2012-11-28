@@ -1,6 +1,6 @@
 name: Lifestones
 main: com.cyprias.Lifestones.Lifestones
-version: 0.0.3
+version: 0.1.0
 
 commands:
   lifestones:

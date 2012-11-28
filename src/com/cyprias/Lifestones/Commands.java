@@ -101,20 +101,29 @@ public class Commands implements CommandExecutor {
 					plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 
 					return true;
-				} else if (args[0].equalsIgnoreCase("sql")) {
-					plugin.database.loadLifestones(Config.preferAsyncDBCalls);
+				}	if (args[0].equalsIgnoreCase("reload")) {
+					if (!hasCommandPermission(sender, "lifestones.reload")) {
+						return true;
+					}
+					
+					plugin.getPluginLoader().disablePlugin(plugin);
+					plugin.getPluginLoader().enablePlugin(plugin);
+					
+					plugin.sendMessage(sender, "Plugin reloaded.");
 					return true;
-					// sqliteTest1
 				}
 			}
 			
 			plugin.sendMessage(sender, plugin.pluginName + " v" + plugin.getDescription().getVersion());
 			
-			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " create §a- Create a lifestone at your location.", true, false);
-			
 			if (plugin.hasPermission(sender, "lifestones.recall") && (sender instanceof Player))
 				plugin.sendMessage(sender, "§a/lifestone §f- Recall to your lifestone.", true, false);
+			
+			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " create §a- Create a lifestone at your location.", true, false);
+			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
+				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §a- Reload the plugin.", true, false);
+
 			
 			return true;
 		}
