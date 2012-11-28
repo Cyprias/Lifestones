@@ -153,10 +153,6 @@ public class MySQL {
 			}
 		}
 
-		if (success > 0) {
-			System.out.println("mysql Lifestone saved in DB!");
-		}
-
 		try {
 			con.close();
 		} catch (SQLException e) {

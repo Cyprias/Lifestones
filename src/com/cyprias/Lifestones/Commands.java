@@ -104,7 +104,16 @@ public class Commands implements CommandExecutor {
 						rBlock.setTypeId(lsBlock.bID);
 						rBlock.setData(lsBlock.bData);
 					}
-
+					
+					//TP player above the device
+					for (int y=1; y < (256-pBlock.getY()); y++){
+						rBlock = pBlock.getRelative(0, y, 0);
+						if (rBlock.getTypeId() == 0){
+							player.teleport(new Location(player.getWorld(), rBlock.getX() + .5, rBlock.getY() + 1, rBlock.getZ() + .5));
+							break;
+						}
+					}
+					
 					plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
 					plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 
