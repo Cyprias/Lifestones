@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Config.lifestoneStructure;
@@ -106,13 +107,43 @@ public class Commands implements CommandExecutor {
 
 					Block rBlock;
 
-					lifestoneStructure lsBlock;
-					for (int i = 0; i < Config.structureBlocks.size(); i++) {
-						lsBlock = Config.structureBlocks.get(i);
-						rBlock = pBlock.getRelative(lsBlock.rX, lsBlock.rY, lsBlock.rZ);
-						rBlock.setTypeId(lsBlock.bID);
-						rBlock.setData(lsBlock.bData);
+					lifestoneStructure lsStructure;
+					BlockPlaceEvent e;
+
+					if (Config.callBlockPlaceEventUponCreating == true){
+						for (int i = 0; i < Config.structureBlocks.size(); i++) {
+							lsStructure = Config.structureBlocks.get(i);
+							rBlock = pBlock.getRelative(lsStructure.rX, lsStructure.rY, lsStructure.rZ);
+							//don't change the block type, try placing the blocks down again to check if user has permission in the area to build. 
+							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
+							plugin.debug("Spoofing placment " + i);
+							player.getServer().getPluginManager().callEvent(e);
+							
+							
+							if (e.isCancelled()){
+								plugin.sendMessage(sender, "Unable to build lifestone here.");
+								return true;
+							}
+						}
 					}
+					for (int i = 0; i < Config.structureBlocks.size(); i++) {
+						lsStructure = Config.structureBlocks.get(i);
+						rBlock = pBlock.getRelative(lsStructure.rX, lsStructure.rY, lsStructure.rZ);
+
+						
+						if (Config.callBlockPlaceEventUponCreating == true){
+							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
+							e.getBlock().setTypeId(lsStructure.bID);
+							e.getBlock().setData(lsStructure.bData);
+							
+							plugin.debug("Placing block " + i);
+							player.getServer().getPluginManager().callEvent(e);
+						}else{
+							rBlock.setTypeId(lsStructure.bID);
+							rBlock.setData(lsStructure.bData);
+						}
+					}
+					
 					
 					//TP player above the device
 					for (int y=1; y < (256-pBlock.getY()); y++){
@@ -126,6 +157,8 @@ public class Commands implements CommandExecutor {
 					plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
 					plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 
+					plugin.sendMessage(sender, "Lifestone created.");
+					
 					return true;
 				}	else if (args[0].equalsIgnoreCase("reload")) {
 					if (!hasCommandPermission(sender, "lifestones.reload")) {

@@ -16,3 +16,4 @@ protectPlayerAfterRecallDuration: 10
 randomTPRadius: 1000
 rowsPerPage: 10
 lookAtNearestLS: true
+callBlockPlaceEventUponCreating: true
