@@ -276,7 +276,7 @@ public class Lifestones extends JavaPlugin {
 	}
 
 	
-	public Location getRandomLocation(World world){
+	public Location getRandomLocation(World world, int fails){
 		
 		int rad = Config.randomTPRadius;
 		double bX = 0;
@@ -287,6 +287,8 @@ public class Lifestones extends JavaPlugin {
 			bZ = wb.GetWorldBorder(world.getName()).getZ();
 		}
 		
+		if (fails >= 0)
+			return null;
 		
 		
 		Double rX = (bX-rad) + (Math.random() * (rad*2));
@@ -332,12 +334,17 @@ public class Lifestones extends JavaPlugin {
 				return new Location(world, blockLoc.getBlockX() + .5, blockLoc.getBlockY() + 2, blockLoc.getBlockZ() + .5);
 				
 			default:
-				return getRandomLocation(world);
+				return getRandomLocation(world, fails+1);
 			}
 		}
 		
 		return null;
 	}
+	
+	public Location getRandomLocation(World world){
+		return getRandomLocation(world, 0);
+	}
+	
 	private Block getTopBlock(World world, int X, int Z){
 		Block b;
 		for (int i=255; i>0; i--){

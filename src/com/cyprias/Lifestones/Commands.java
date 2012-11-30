@@ -70,7 +70,7 @@ public class Commands implements CommandExecutor {
 		// message);
 
 		if (commandLabel.equals("lifestone")) {
-			if (args.length > 1) {
+			if (args.length > 0) {
 				return onCommand(sender, cmd, "lifestones", args);
 			}
 			if (!hasCommandPermission(sender, "lifestones.recall")) {
@@ -116,12 +116,11 @@ public class Commands implements CommandExecutor {
 							rBlock = pBlock.getRelative(lsStructure.rX, lsStructure.rY, lsStructure.rZ);
 							//don't change the block type, try placing the blocks down again to check if user has permission in the area to build. 
 							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
-							plugin.debug("Spoofing placment " + i);
 							player.getServer().getPluginManager().callEvent(e);
 							
 							
 							if (e.isCancelled()){
-								plugin.sendMessage(sender, "Unable to build lifestone here.");
+								plugin.sendMessage(sender, "Another plugin won't let us build here.");
 								return true;
 							}
 						}
@@ -135,8 +134,7 @@ public class Commands implements CommandExecutor {
 							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
 							e.getBlock().setTypeId(lsStructure.bID);
 							e.getBlock().setData(lsStructure.bData);
-							
-							plugin.debug("Placing block " + i);
+
 							player.getServer().getPluginManager().callEvent(e);
 						}else{
 							rBlock.setTypeId(lsStructure.bID);
@@ -181,6 +179,9 @@ public class Commands implements CommandExecutor {
 					if (tpLoc != null){
 						player.teleport(tpLoc);
 						plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + tpLoc.getBlockX() + ChatColor.GRAY+"x" +ChatColor.GREEN + tpLoc.getBlockZ() + ChatColor.GRAY+ ".");
+						return true;
+					}else{
+						plugin.sendMessage(player, "Can't find a safe block, try again?");
 						return true;
 					}
 				} else if (args[0].equalsIgnoreCase("near")) {
