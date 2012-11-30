@@ -20,7 +20,6 @@ import com.cyprias.Lifestones.Config.lifestoneStructure;
 import com.wimbli.WorldBorder.WorldBorder;
 
 public class Lifestones extends JavaPlugin {
-	private String stPluginEnabled = "§f%s §7v§f%s §7is enabled.";
 	public static String chatPrefix = "§f[§aLs§f] ";
 	static String pluginName;
 	public Commands commands;
@@ -30,6 +29,7 @@ public class Lifestones extends JavaPlugin {
 	public Database database;
 	public HashMap<String, Double> playerProtections = new HashMap<String, Double>();
 	private WorldBorder wb;
+	private Logger log = Logger.getLogger("Minecraft");
 	
 	public void onLoad() {
 		pluginName = getDescription().getName();
@@ -54,6 +54,7 @@ public class Lifestones extends JavaPlugin {
 			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		
 		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
+		log.info(String.format("f%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
 	}
 
 	public void onEnable() {
@@ -64,7 +65,7 @@ public class Lifestones extends JavaPlugin {
 
 		database.loadDatabases(Config.preferAsyncDBCalls);
 
-		info(String.format(stPluginEnabled, pluginName, this.getDescription().getVersion()));
+		log.info(String.format("f%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
 
 	public void onDisable() {
@@ -72,7 +73,7 @@ public class Lifestones extends JavaPlugin {
 		getCommand("lifestones").setExecutor(null);
 	}
 
-	private Logger log = Logger.getLogger("Minecraft");
+	
 
 	public void info(String msg) {
 		getServer().getConsoleSender().sendMessage(chatPrefix + msg);

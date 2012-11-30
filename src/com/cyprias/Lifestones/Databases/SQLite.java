@@ -35,9 +35,6 @@ public class SQLite {
 		
 		
 		try {
-			Class.forName("java.sql.Driver");
-	
-			
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
 			ResultSet result = stat.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "';");
@@ -53,26 +50,25 @@ public class SQLite {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 		return exists;
 	}
 
 	public void createTables() {
-		database.plugin.debug("Creating SQLite tables...");
+		//database.plugin.debug("Creating SQLite tables...");
 		try {
+			Class.forName("org.sqlite.JDBC");
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
 
 			if (tableExists("Lifestones") == false) {
-				database.plugin.info("Creating Lifestones table.");
+				System.out.println("Creating Lifestones.Lifestones table.");
 				stat.executeUpdate("CREATE TABLE `Lifestones` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL)");
 			}
 			if (tableExists("Attunements") == false) {
-				database.plugin.info("Creating Attunements table.");
+				System.out.println("Creating Lifestones.Attunements table.");
 				stat.executeUpdate("CREATE TABLE `Attunements` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
 				//player, world, x,y,z,yaw, pitch
 			}
@@ -81,6 +77,9 @@ public class SQLite {
 			con.close();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
