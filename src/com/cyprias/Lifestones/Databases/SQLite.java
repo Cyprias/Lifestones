@@ -27,7 +27,6 @@ public class SQLite {
 		this.pluginPath = file.getPath() + file.separator;
 
 		sqlDB = "jdbc:sqlite:" + pluginPath + "database.sqlite";
-		
 	}
 
 	public boolean tableExists(String tableName) {

@@ -23,7 +23,6 @@ public class MySQL {
 	public MySQL(Database database, File dataFolder) {
 		this.database = database;
 		
-		createTables();
 	}
 
 	public static Connection getSQLConnection() {
