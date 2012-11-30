@@ -76,13 +76,14 @@ public class MySQL {
 	
 	public void createTables() {
 		String query;
-
+		database.plugin.debug("Creating MySQL tables...");
 		Connection con = getSQLConnection();
 		PreparedStatement statement = null;
 
 		try {
 
 			if (tableExists(Config.sqlPrefix + "Lifestones") == false) {
+				database.plugin.debug("Creating Lifestones tables.");
 				query = "CREATE TABLE `" + Config.sqlPrefix + "Lifestones` (`id` INT PRIMARY KEY AUTO_INCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL) ENGINE = InnoDB";
 				statement = con.prepareStatement(query);
 				statement.executeUpdate();
@@ -90,6 +91,7 @@ public class MySQL {
 
 			
 			if (tableExists(Config.sqlPrefix + "Attunements") == false) {
+				database.plugin.debug("Creating Attunements tables.");
 				query = "CREATE TABLE `"+Config.sqlPrefix + "Attunements` (`id` INT PRIMARY KEY AUTO_INCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL) ENGINE = InnoDB";
 				statement = con.prepareStatement(query);
 				statement.executeUpdate();

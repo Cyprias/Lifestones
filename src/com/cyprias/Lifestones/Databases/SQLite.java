@@ -62,14 +62,17 @@ public class SQLite {
 	}
 
 	public void createTables() {
+		database.plugin.debug("Creating SQLite tables...");
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
 
 			if (tableExists("Lifestones") == false) {
+				database.plugin.info("Creating Lifestones table.");
 				stat.executeUpdate("CREATE TABLE `Lifestones` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL)");
 			}
 			if (tableExists("Attunements") == false) {
+				database.plugin.info("Creating Attunements table.");
 				stat.executeUpdate("CREATE TABLE `Attunements` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
 				//player, world, x,y,z,yaw, pitch
 			}
@@ -169,7 +172,7 @@ public class SQLite {
 			Connection con = DriverManager.getConnection(sqlDB);
 
 			Statement stat = con.createStatement();
-			ResultSet rs = stat.executeQuery("select * from `"+table+"` where `world` LIKE "+bWorld+" AND `x` LIKE " + bX + " AND `y` LIKE " + bY+ " AND `z` LIKE "+bZ);
+			ResultSet rs = stat.executeQuery("select * from `"+table+"` where `world` LIKE '"+bWorld+"' AND `x` LIKE " + bX + " AND `y` LIKE " + bY+ " AND `z` LIKE "+bZ);
 			while (rs.next()) {
 				if (rs.getString("world").equalsIgnoreCase(bWorld)){
 					

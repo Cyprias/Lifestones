@@ -41,7 +41,7 @@ public class Lifestones extends JavaPlugin {
 		this.events = new Events(this);
 		this.database = new Database(this);
 
-		this.database.createTables(Config.preferAsyncDBCalls);
+		this.database.createTables();
 
 		
 		try {
@@ -175,24 +175,38 @@ public class Lifestones extends JavaPlugin {
 	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public static HashMap<Block, Block> isProtectedCache = new HashMap<Block, Block>();
 
-	private void cacheSurroundBlocks(lifestoneLoc loc) {
-		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X, loc.Y, loc.Z);
-		lifestoneStructure lsBlock;
-		for (int b = 0; b < Config.structureBlocks.size(); b++) {
-			lsBlock = Config.structureBlocks.get(b);
-			isLifestoneCache.put(getServer().getWorld(loc.world).getBlockAt(loc.X + lsBlock.rX, loc.Y + lsBlock.rY, loc.Z + lsBlock.rZ), cBlock);
-			// info("caching " + (loc.X+lsBlock.rX) +", " + (loc.Y+lsBlock.rY) +
-			// ", " + (loc.Z+lsBlock.rZ));
+	private World getWorld(String worldName){
+		for (int i=0; i< getServer().getWorlds().size(); i++){
+			if (getServer().getWorlds().get(i).getName().equalsIgnoreCase(worldName)){
+				return getServer().getWorlds().get(i);
+			}
+			
 		}
-
-		for (int y_iter = cBlock.getX() + Config.protectLifestoneRadius; y_iter > cBlock.getX() - Config.protectLifestoneRadius; y_iter--) {
-			for (int x_iter = cBlock.getY() + Config.protectLifestoneRadius; x_iter > cBlock.getY() - Config.protectLifestoneRadius; x_iter--) {
-				for (int z_iter = cBlock.getZ() + Config.protectLifestoneRadius; z_iter > cBlock.getZ() - Config.protectLifestoneRadius; z_iter--) {
-
-					isProtectedCache.put(getServer().getWorld(loc.world).getBlockAt(y_iter, x_iter, z_iter), cBlock);
-					// info("protecting " + y_iter +", " +x_iter + ", " +
-					// z_iter);
-
+		
+		return null;
+	}
+	
+	private void cacheSurroundBlocks(lifestoneLoc loc) {
+		World world = getWorld(loc.world);
+		if (world != null){
+			Block cBlock = world.getBlockAt(loc.X, loc.Y, loc.Z);
+			lifestoneStructure lsBlock;
+			for (int b = 0; b < Config.structureBlocks.size(); b++) {
+				lsBlock = Config.structureBlocks.get(b);
+				isLifestoneCache.put(world.getBlockAt(loc.X + lsBlock.rX, loc.Y + lsBlock.rY, loc.Z + lsBlock.rZ), cBlock);
+				// info("caching " + (loc.X+lsBlock.rX) +", " + (loc.Y+lsBlock.rY) +
+				// ", " + (loc.Z+lsBlock.rZ));
+			}
+	
+			for (int y_iter = cBlock.getX() + Config.protectLifestoneRadius; y_iter > cBlock.getX() - Config.protectLifestoneRadius; y_iter--) {
+				for (int x_iter = cBlock.getY() + Config.protectLifestoneRadius; x_iter > cBlock.getY() - Config.protectLifestoneRadius; x_iter--) {
+					for (int z_iter = cBlock.getZ() + Config.protectLifestoneRadius; z_iter > cBlock.getZ() - Config.protectLifestoneRadius; z_iter--) {
+	
+						isProtectedCache.put(world.getBlockAt(y_iter, x_iter, z_iter), cBlock);
+						// info("protecting " + y_iter +", " +x_iter + ", " +
+						// z_iter);
+	
+					}
 				}
 			}
 		}
