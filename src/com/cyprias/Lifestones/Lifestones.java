@@ -24,7 +24,7 @@ public class Lifestones extends JavaPlugin {
 	static String pluginName;
 	public Commands commands;
 	public Config config;
-	public YML yml;
+	//public YML yml;
 	public Events events;
 	public Database database;
 	public HashMap<String, Double> playerProtections = new HashMap<String, Double>();
@@ -34,7 +34,7 @@ public class Lifestones extends JavaPlugin {
 	public void onLoad() {
 		pluginName = getDescription().getName();
 
-		this.yml = new YML(this);
+	//	this.yml = new YML(this);
 		this.config = new Config(this);
 		config.reloadOurConfig();
 		this.commands = new Commands(this);
@@ -43,7 +43,6 @@ public class Lifestones extends JavaPlugin {
 
 		this.database.createTables();
 
-		
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -57,8 +56,12 @@ public class Lifestones extends JavaPlugin {
 		log.info(String.format("f%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
 	}
 
+	public static HashMap<String, String> locales = new HashMap<String, String>();
 	public void onEnable() {
 		config.reloadOurConfig();
+		
+		loadLocales();
+		
 		getCommand("lifestone").setExecutor(this.commands);
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
@@ -68,6 +71,25 @@ public class Lifestones extends JavaPlugin {
 		log.info(String.format("f%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
 
+	private void loadLocales(){
+		//Copy any new locale strings to file on disk.
+		YML resLocale = new YML(getResource("enUS.yml"));
+		YML locale = new YML(getResource(Config.localeFile), getDataFolder(), Config.localeFile);
+		for (String key : resLocale.config.getKeys(false)) {
+			if (locale.config.get(key) == null){
+				info("Adding new locale " + key + " = " + resLocale.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));
+				locale.config.set(key, resLocale.getString(key));
+				locale.save();
+			}
+		}
+		
+		//Load locales into our hashmap. 
+		locales.clear();
+		for (String key : locale.config.getKeys(false)) {
+			locales.put(key, locale.config.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));// §
+		}
+	}
+	
 	public void onDisable() {
 
 		getCommand("lifestones").setExecutor(null);
@@ -378,5 +400,22 @@ public class Lifestones extends JavaPlugin {
 			return false;
 		}
 		return true;
+	}
+	
+	static public String L(String key) {
+		if (locales.containsKey(key))
+			return locales.get(key).toString();
+		
+		return "MISSING LOCALE: " + ChatColor.RED + key;
+	}
+
+	static public String F(String key, Object... args) {
+		String value = L(key);
+		try {
+			if (value != null || args != null)
+				value = String.format(value, args); // arg.toString()
+		} catch (Exception e) {e.printStackTrace();
+		}
+		return value;
 	}
 }

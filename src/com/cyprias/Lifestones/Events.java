@@ -2,6 +2,7 @@ package com.cyprias.Lifestones;
 
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,7 +46,18 @@ public class Events implements Listener {
 	 * onBlockRedstone(BlockRedstoneEvent event) {
 	 * plugin.info(event.getEventName()); }
 	 */
-
+	static public String L(String key) {
+		return Lifestones.L(key);
+	}
+	static public String F(String key, Object... args) {
+		return Lifestones.F(key, args);
+	}
+	
+	String GREEN = ChatColor.GREEN.toString();
+	String RESET = ChatColor.RESET.toString();
+	String GRAY = ChatColor.GRAY.toString();
+	String YELLOW = ChatColor.YELLOW.toString();
+	
 	public class attuneTask implements Runnable {
 		Player player;
 
@@ -57,13 +69,13 @@ public class Events implements Listener {
 			pX = player.getLocation().getBlockX();
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
-
-			plugin.sendMessage(player, "Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel.");
+			//"Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel."
+			plugin.sendMessage(player, GRAY+F("attuningToLifestone", GREEN+Config.attuneDelay+GRAY));
 		}
 
 		public void run() {
 			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ) {
-				plugin.sendMessage(player, "You moved too far, attunement failed.");
+				plugin.sendMessage(player, GRAY+L("movedTooFarAttunementFailed"));
 				return;
 			}
 
@@ -79,7 +91,7 @@ public class Events implements Listener {
 			String pName = player.getName();
 
 			Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
-			plugin.sendMessage(player, "Attuned to lifestone");
+			plugin.sendMessage(player, GRAY+L("attunedToLifestone"));
 
 			plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
 		}
@@ -113,7 +125,7 @@ public class Events implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		plugin.info(event.getEventName());
+		plugin.debug(event.getEventName());
 		if (Attunements.players.containsKey(event.getPlayer().getName())) {
 			Attunement attunement = Attunements.players.get(event.getPlayer().getName());
 			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw,
@@ -256,7 +268,7 @@ public class Events implements Listener {
 		if (plugin.isLifestone(block) == true) {
 
 			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))) {
-				plugin.sendMessage(player, "You cannot modify the lifestone.");
+				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
 			}
@@ -269,7 +281,7 @@ public class Events implements Listener {
 			plugin.database.removeLifestone(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ(), Config.preferAsyncDBCalls);
 			plugin.unregsterLifestone(new lifestoneLoc(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
 
-			plugin.sendMessage(player, "Lifestone unregistered.");
+			plugin.sendMessage(player, GRAY+L("lifestoneUnregistered"));
 
 			event.setCancelled(true);// Stop the block from falling, our
 										// unregister function should air the
@@ -277,7 +289,7 @@ public class Events implements Listener {
 
 		} else if (plugin.isProtected(block) == true) {
 			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))) {
-				plugin.sendMessage(player, "That block is protected by the lifestone.");
+				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
 			}
@@ -297,14 +309,14 @@ public class Events implements Listener {
 		if (plugin.isLifestone(block) == true) {
 
 			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))) {
-				plugin.sendMessage(player, "You cannot modify the lifestone.");
+				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
 			}
 
 		} else if (plugin.isProtected(block) == true) {
 			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))) {
-				plugin.sendMessage(player, "That block is protected by the lifestone.");
+				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
 			}

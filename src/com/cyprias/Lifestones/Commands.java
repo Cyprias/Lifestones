@@ -27,6 +27,18 @@ public class Commands implements CommandExecutor {
 		this.plugin = plugin;
 	}
 
+	static public String L(String key) {
+		return Lifestones.L(key);
+	}
+	static public String F(String key, Object... args) {
+		return Lifestones.F(key, args);
+	}
+	
+	String GREEN = ChatColor.GREEN.toString();
+	String RESET = ChatColor.RESET.toString();
+	String GRAY = ChatColor.GRAY.toString();
+	String YELLOW = ChatColor.YELLOW.toString();
+	
 	public class recallTask implements Runnable {
 		Player player;
 
@@ -39,12 +51,13 @@ public class Commands implements CommandExecutor {
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
 
-			plugin.sendMessage(player, "Recalling to lifestone in " + Config.recallDelay + " seconds, move to cancel.");
+			plugin.sendMessage(player,GRAY+F("recallingToLifestone", GREEN + Config.recallDelay + GRAY));
 		}
 
 		public void run() {
 			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ) {
-				plugin.sendMessage(player, "You moved too far, attunement failed.");
+				plugin.sendMessage(player,GRAY+F("recallingToLifestone", GREEN + Config.recallDelay + GRAY));
+				//plugin.sendMessage(player, GRAY+L("movedTooFarAttunementFailed"));
 				return;
 			}
 
@@ -54,7 +67,7 @@ public class Commands implements CommandExecutor {
 				attunement.pitch);
 
 			player.teleport(loc);
-			plugin.sendMessage(player, "Recalled to lifestone");
+			plugin.sendMessage(player, GRAY+L("recalledToLifestone"));
 			
 			
 			plugin.playerProtections.put(player.getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
@@ -80,7 +93,7 @@ public class Commands implements CommandExecutor {
 			
 			
 			if (!(Attunements.players.containsKey(sender.getName()))) {
-				plugin.sendMessage(sender, "You have not attuned to a lifestone yet.");
+				plugin.sendMessage(sender, GRAY+L("notAttunedYet"));
 				return true;
 			}
 			Player player = (Player) sender;
@@ -101,7 +114,7 @@ public class Commands implements CommandExecutor {
 
 					Block pBlock = player.getLocation().getBlock();
 					if (plugin.isProtected(pBlock)) {
-						plugin.sendMessage(sender, "You're too close to another lifestone.");
+						plugin.sendMessage(sender, GRAY+L("tooCloseToAnotherLifestone"));
 						return true;
 					}
 
@@ -120,7 +133,7 @@ public class Commands implements CommandExecutor {
 							
 							
 							if (e.isCancelled()){
-								plugin.sendMessage(sender, "Another plugin won't let us build here.");
+								plugin.sendMessage(sender, GRAY+L("anotherPluginBlockingCreation"));
 								return true;
 							}
 						}
@@ -155,7 +168,7 @@ public class Commands implements CommandExecutor {
 					plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
 					plugin.database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
 
-					plugin.sendMessage(sender, "Lifestone created.");
+					plugin.sendMessage(sender, GRAY+L("lifestoneCreated"));
 					
 					return true;
 				}	else if (args[0].equalsIgnoreCase("reload")) {
@@ -165,8 +178,8 @@ public class Commands implements CommandExecutor {
 					
 					plugin.getPluginLoader().disablePlugin(plugin);
 					plugin.getPluginLoader().enablePlugin(plugin);
-					
-					plugin.sendMessage(sender, "Plugin reloaded.");
+
+					plugin.sendMessage(sender, GRAY+L("pluginReloaded"));
 					return true;
 				} else if (args[0].equalsIgnoreCase("randomtp")) {
 					if (!hasCommandPermission(sender, "lifestones.randomtp")) {
@@ -178,10 +191,12 @@ public class Commands implements CommandExecutor {
 					
 					if (tpLoc != null){
 						player.teleport(tpLoc);
-						plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + tpLoc.getBlockX() + ChatColor.GRAY+"x" +ChatColor.GREEN + tpLoc.getBlockZ() + ChatColor.GRAY+ ".");
+						plugin.sendMessage(sender, GRAY+F("teleportingToCoordinates", GREEN + tpLoc.getBlockX() + GRAY, GREEN + tpLoc.getBlockY() + GRAY, GREEN + tpLoc.getBlockZ() + GRAY));
+						
 						return true;
 					}else{
-						plugin.sendMessage(player, "Can't find a safe block, try again?");
+						plugin.sendMessage(player, GRAY + L("cantFindSafeBlock"));
+						
 						return true;
 					}
 				} else if (args[0].equalsIgnoreCase("near")) {
@@ -215,8 +230,10 @@ public class Commands implements CommandExecutor {
 						
 						String sDir = MathUtil.DegToDirection(MathUtil.AngleCoordsToCoords(pX, pZ, lifestones.get(0).X, lifestones.get(0).Z));
 
-						plugin.sendMessage(sender, "Nearest lifestone is at " + lifestones.get(0).X + " " + lifestones.get(0).Y + " " + lifestones.get(0).Z + ", " + Math.round(lifestones.get(0).distance) + " blocks " + sDir + ".");
-
+						//plugin.sendMessage(sender, "Nearest lifestone is at " + lifestones.get(0).X + " " + lifestones.get(0).Y + " " + lifestones.get(0).Z + ", " + Math.round(lifestones.get(0).distance) + " blocks " + sDir + ".");
+						plugin.sendMessage(player, GRAY + F("nearestLifestoneAt", GREEN + lifestones.get(0).X + GRAY, GREEN + lifestones.get(0).Y + GRAY, GREEN + lifestones.get(0).Z + GRAY, GREEN + Math.round(lifestones.get(0).distance) + GRAY, GREEN + sDir + GRAY));
+						
+						
 						if (Config.lookAtNearestLS == true){
 							Location pLoc = player.getLocation();
 							Location lsLoc = new Location(player.getWorld(), lifestones.get(0).X + 0.5,lifestones.get(0).Y,lifestones.get(0).Z + 0.5);
@@ -236,7 +253,7 @@ public class Commands implements CommandExecutor {
 						}
 						
 					}else{
-						plugin.sendMessage(sender, "There are no lifestones near you.");
+						plugin.sendMessage(sender, GRAY + L("noLifestoneNear"));
 					}
 					return true;
 				} else if (args[0].equalsIgnoreCase("list")) {
@@ -249,7 +266,7 @@ public class Commands implements CommandExecutor {
 						if (plugin.isInt(args[1])) {
 							page = Math.abs(Integer.parseInt(args[1]));
 						} else {
-							plugin.sendMessage(sender, "Invalid page number: " + args[1]);
+							plugin.sendMessage(sender, GRAY + F("invalidPageNumber", args[1]));
 							return true;
 						}
 					}
@@ -260,7 +277,8 @@ public class Commands implements CommandExecutor {
 					int maxPages = (int) Math.ceil((float) rows / (float) Config.rowsPerPage);
 
 					if (rows > Config.rowsPerPage){
-						plugin.sendMessage(sender, "Page " + (page) + "/" + (maxPages));
+						//plugin.sendMessage(sender, "Page " + (page) + "/" + (maxPages));
+						plugin.sendMessage(sender, GRAY+F("page", GREEN+page+GRAY, GREEN+maxPages+GRAY));
 					}
 					
 					int start = ((page-1) * Config.rowsPerPage);
@@ -271,7 +289,8 @@ public class Commands implements CommandExecutor {
 					lifestoneLoc ls; 
 					for (int i = start; i < end; i++) {
 						ls = plugin.lifestoneLocations.get(i);
-						plugin.sendMessage(sender, (i+1) + ": " + ls.world + " " + ls.X + " " + ls.Y + " " + ls.Z, false);
+						plugin.sendMessage(sender, GRAY+F("lifestoneIndex", GREEN+i+1+GRAY, GREEN+ls.world+GRAY, GREEN+ls.X+GRAY, GREEN+ls.Y+GRAY, GREEN+ls.Z+GRAY), false);
+
 					}
 					return true;
 				} else if (args[0].equalsIgnoreCase("tp")) {
@@ -283,18 +302,18 @@ public class Commands implements CommandExecutor {
 						if (plugin.isInt(args[1])) {
 							lsID = Math.abs(Integer.parseInt(args[1]));
 						} else {
-							plugin.sendMessage(sender, "Invalid id: " + args[1]);
+							plugin.sendMessage(sender, GRAY+F("invalidID",args[1]));
 							return true;
 						}
 					}else{
-						plugin.sendMessage(sender, "Include a id number from the lifestone list.");
+						plugin.sendMessage(sender, GRAY+L("includeIndexNum"));
 						return true;
 					}
 						
 					lsID-=1;
 					
 					if (lsID > plugin.lifestoneLocations.size()){
-						plugin.sendMessage(sender, lsID + " is too high!");
+						plugin.sendMessage(sender, GRAY+F("indexTooHigh",GREEN+lsID+GRAY));
 						return true;
 					}
 					
@@ -308,7 +327,10 @@ public class Commands implements CommandExecutor {
 						if (rBlock.getTypeId() == 0){
 							
 							player.teleport(new Location(player.getWorld(), rBlock.getX() + .5, rBlock.getY() + 1, rBlock.getZ() + .5));
-							plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + rBlock.getX() + ChatColor.GRAY+"x" +ChatColor.GREEN + rBlock.getZ() + ChatColor.GRAY+ ".");
+							//plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + rBlock.getX() + ChatColor.GRAY+"x" +ChatColor.GREEN + rBlock.getZ() + ChatColor.GRAY+ ".");
+
+							plugin.sendMessage(sender, GRAY+F("teleportingToCoordinates", GREEN + rBlock.getX() + GRAY, GREEN + rBlock.getY() + GRAY, GREEN + rBlock.getZ() + GRAY));
+							
 							
 							return true;
 						}
@@ -319,25 +341,30 @@ public class Commands implements CommandExecutor {
 				}
 			}
 			
-			plugin.sendMessage(sender, plugin.pluginName + " v" + plugin.getDescription().getVersion());
-			
+			plugin.sendMessage(sender, F("nameAndVersion", GREEN+plugin.pluginName +GRAY, GREEN+plugin.getDescription().getVersion()+GRAY));
+
 			if (plugin.hasPermission(sender, "lifestones.recall") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/lifestone §7- Recall to your lifestone.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone" + GRAY+" - " + L("lifestoneDesc"), true, false);
+			
+			
 			
 			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " create §7- Create a lifestone at your location.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone create" + GRAY+" - " + L("createALifestone"), true, false);
+			
 			if (plugin.hasPermission(sender, "lifestones.list") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " list §7- List all lifestone locations.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("lifeAllLifestones"), true, false);
+			
 			if (plugin.hasPermission(sender, "lifestones.tp") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " tp [#] §7- Teleport to a lifestone.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("tpToLifestone"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.near") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " near §7- Show the nearest lifestone.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("showNearestLifestone"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " reload §7- Reload the plugin.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("reloadThePlugin"), true, false);
+			
 			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
-				plugin.sendMessage(sender, "§a/" + commandLabel + " randomtp §7- Teleport to a random location in the world.", true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("tpToRandomLoc"), true, false);
 			
 			return true;
 		}
@@ -345,23 +372,13 @@ public class Commands implements CommandExecutor {
 		return false;
 	}
 	
-	public static String getFinalArg(final String[] args, final int start) {
-		final StringBuilder bldr = new StringBuilder();
-		for (int i = start; i < args.length; i++) {
-			if (i != start) {
-				bldr.append(" ");
-			}
-			bldr.append(args[i]);
-		}
-		return bldr.toString();
-	}
 
+	
 	public boolean hasCommandPermission(CommandSender player, String permission) {
 		if (plugin.hasPermission(player, permission)) {
 			return true;
 		}
-		// sendMessage(player, F("stNoPermission", permission));
-		plugin.sendMessage(player, ChatColor.GRAY + "You do not have permission: " + ChatColor.YELLOW + permission);
+		plugin.sendMessage(player, ChatColor.GRAY +F("noPermission", YELLOW+permission+GRAY));
 		return false;
 	}
 

@@ -16,7 +16,7 @@ public class Config {
 	
 
 	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS, callBlockPlaceEventUponCreating;
-	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort;
+	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort, localeFile;
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 
 	public Config(Lifestones plugin) {
@@ -60,6 +60,8 @@ public class Config {
 		
 		callBlockPlaceEventUponCreating = config.getBoolean("callBlockPlaceEventUponCreating");
 		
+		localeFile = config.getString("localeFile");
+		
 		loadStrucutre();
 	}
 	
@@ -81,8 +83,9 @@ public class Config {
 	
 	
 	private void loadStrucutre(){
-		FileConfiguration fc = YML.getYMLConfig("structure.yml", plugin.getResource("structure.yml"));
-		ConfigurationSection dStructure = fc.getConfigurationSection("structure");
+		YML yml = new YML(plugin.getResource("structure.yml"),plugin.getDataFolder(), "structure.yml");
+
+		ConfigurationSection dStructure = yml.config.getConfigurationSection("structure");
 		
 		Block block;
 		structureBlocks.clear();
