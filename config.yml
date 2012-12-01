@@ -18,3 +18,4 @@ rowsPerPage: 10
 lookAtNearestLS: true
 callBlockPlaceEventUponCreating: true
 localeFile: enUS.yml
+allowPerWorldAttunement: true

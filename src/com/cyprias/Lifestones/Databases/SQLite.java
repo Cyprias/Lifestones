@@ -56,6 +56,8 @@ public class SQLite {
 		return exists;
 	}
 
+	static String attunementsTbl = "Attunements_v2";
+	
 	public void createTables() {
 		//database.plugin.debug("Creating SQLite tables...");
 		try {
@@ -67,11 +69,18 @@ public class SQLite {
 				System.out.println("Creating Lifestones.Lifestones table.");
 				stat.executeUpdate("CREATE TABLE `Lifestones` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL)");
 			}
-			if (tableExists("Attunements") == false) {
+
+			if (tableExists("Attunements") == true) {//old table;
+				System.out.println("Removing unique attribute from player in Attunements.");
+				stat.executeUpdate("ALTER TABLE Attunements DROP INDEX player");
+				//stat.executeUpdate("ALTER TABLE `Attunements` add unique index(player, world);");
+				stat.executeUpdate("RENAME TABLE `Attunements` TO `Attunements_v2` ");
+			}else if (tableExists(attunementsTbl) == false) {
 				System.out.println("Creating Lifestones.Attunements table.");
-				stat.executeUpdate("CREATE TABLE `Attunements` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
-				//player, world, x,y,z,yaw, pitch
+				stat.executeUpdate("CREATE TABLE `"+attunementsTbl+"` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
+
 			}
+			
 			
 			stat.close();
 			con.close();
@@ -130,7 +139,7 @@ public class SQLite {
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
-			ResultSet rs = stat.executeQuery("select * from Attunements;");
+			ResultSet rs = stat.executeQuery("select * from `"+attunementsTbl+"`;");
 			while (rs.next()) {
 				Attunements.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
 			}
@@ -204,23 +213,23 @@ public class SQLite {
 	}
 	
 	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
-		String table = "Attunements";
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 
 			Statement stat = con.createStatement();
 			PreparedStatement prep;
 			/**/
-			prep = con.prepareStatement("UPDATE `"+table+"` SET `world` = ?, `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ?");
+			prep = con.prepareStatement("UPDATE `"+attunementsTbl+"` SET  `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ? AND `world` = ?");
 			
 			
-			prep.setString(1, bWorld);
-			prep.setDouble(2, x);
-			prep.setDouble(3, y);
-			prep.setDouble(4, z);
-			prep.setFloat(5, yaw);
-			prep.setFloat(6, pitch);
-			prep.setString(7, player);
+			
+			prep.setDouble(1, x);
+			prep.setDouble(2, y);
+			prep.setDouble(3, z);
+			prep.setFloat(4, yaw);
+			prep.setFloat(5, pitch);
+			prep.setString(6, player);
+			prep.setString(7, bWorld);
 			int rs = prep.executeUpdate();
 			if (rs > 0){
 				return;
@@ -228,7 +237,7 @@ public class SQLite {
 			
 			
 		
-			prep = con.prepareStatement("insert into `"+table+"` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)");
+			prep = con.prepareStatement("insert into `"+attunementsTbl+"` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)");
 			prep.setString(1, player);
 			prep.setString(2, bWorld);
 			
@@ -276,4 +285,31 @@ public class SQLite {
 		
 	}
 
+	public void removeOtherWorldAttunments(String player, String world) {
+		
+		try {
+			Connection con = DriverManager.getConnection(sqlDB);
+
+			Statement stat = con.createStatement();
+	
+			PreparedStatement prep = con.prepareStatement("DELETE from "+attunementsTbl+" where `player` LIKE ? AND `world` NOT LIKE ?");
+			prep.setString(1, player);
+			prep.setString(2, world);
+			//prep.setDouble(2, x);
+			//prep.setDouble(3, y);
+			//prep.setDouble(4, z);
+			
+			prep.execute();
+
+			
+			
+			stat.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 }

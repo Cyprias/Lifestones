@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.bukkit.command.CommandSender;
 
@@ -70,7 +71,7 @@ public class MySQL {
 		}
 		return exists;
 	}
-	
+
 	public void createTables() {
 		String query;
 		Connection con = getSQLConnection();
@@ -85,10 +86,14 @@ public class MySQL {
 				statement.executeUpdate();
 			}
 
-			
-			if (tableExists(Config.sqlPrefix + "Attunements") == false) {
+			if (tableExists(Config.sqlPrefix + "Attunements") == true) {//old table;
+				System.out.println("Removing unique attribute from player in Attunements.");
+				con.prepareStatement("ALTER TABLE "+Config.sqlPrefix + "Attunements DROP INDEX player").executeUpdate();
+				//con.prepareStatement("ALTER TABLE "+Config.sqlPrefix + "Attunements add unique index(player, world);").executeUpdate();
+				con.prepareStatement("RENAME TABLE `"+Config.sqlPrefix + "Attunements` TO `"+Config.sqlPrefix + "Attunements_v2`").executeUpdate();
+			}else if (tableExists(Config.sqlPrefix + "Attunements_v2") == false) {
 				System.out.println("Creating Lifestones.Attunements table.");
-				query = "CREATE TABLE `"+Config.sqlPrefix + "Attunements` (`id` INT PRIMARY KEY AUTO_INCREMENT, `player` VARCHAR(32) NOT NULL UNIQUE, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL) ENGINE = InnoDB";
+				query = "CREATE TABLE `"+Config.sqlPrefix + "Attunements_v2` (`id` INT PRIMARY KEY AUTO_INCREMENT, `player` VARCHAR(32) NOT NULL, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL) ENGINE = InnoDB";
 				statement = con.prepareStatement(query);
 				statement.executeUpdate();
 			}
@@ -210,25 +215,48 @@ public class MySQL {
 		
 	}
 	
+	public void removeOtherWorldAttunments(String player, String world) {
+		String table = Config.sqlPrefix + "Attunements_v2";
+		Connection con = getSQLConnection();
+		PreparedStatement statement = null;
+		String query = "DELETE from `"+table+"` where `player` LIKE ? AND `world` NOT LIKE ?";
+		try {
+			statement = con.prepareStatement(query);
+			statement.setString(1, player);
+			statement.setString(2, world);
+			//statement.setDouble(3, x);
+			//statement.setDouble(4, y);
+			//statement.setDouble(5, z);
+			
+			statement.executeUpdate();
+			
+			statement.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
-		String table = Config.sqlPrefix + "Attunements";
+		String table = Config.sqlPrefix + "Attunements_v2";
 
 		Connection con = getSQLConnection();
 		PreparedStatement statement = null;
 		int success = 0;
 
-		String query = "UPDATE `"+table+"` SET `world` = ?, `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ?";
+		String query = "UPDATE `"+table+"` SET `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ? AND `world` = ?";
 
 		try {
 			statement = con.prepareStatement(query);
-			statement.setString(1, bWorld);
-			statement.setDouble(2, x);
-			statement.setDouble(3, y);
-			statement.setDouble(4, z);
-			statement.setFloat(5, yaw);
-			statement.setFloat(6, pitch);
-			statement.setString(7, player);
-	
+			statement.setDouble(1, x);
+			statement.setDouble(2, y);
+			statement.setDouble(3, z);
+			statement.setFloat(4, yaw);
+			statement.setFloat(5, pitch);
+			statement.setString(6, player);
+			statement.setString(7, bWorld);
+			
 			success = statement.executeUpdate();
 			
 			statement.close();
@@ -272,7 +300,7 @@ public class MySQL {
 	}
 	
 	public void loadAttunements() {
-		String table = Config.sqlPrefix + "Attunements";
+		String table = Config.sqlPrefix + "Attunements_v2";
 
 		Connection con = getSQLConnection();
 		PreparedStatement statement = null;

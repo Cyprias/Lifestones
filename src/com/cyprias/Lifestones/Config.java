@@ -15,7 +15,7 @@ public class Config {
 	private static Configuration config;
 	
 
-	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS, callBlockPlaceEventUponCreating;
+	public static Boolean mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS, callBlockPlaceEventUponCreating, allowPerWorldAttunement;
 	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort, localeFile;
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 
@@ -61,6 +61,8 @@ public class Config {
 		callBlockPlaceEventUponCreating = config.getBoolean("callBlockPlaceEventUponCreating");
 		
 		localeFile = config.getString("localeFile");
+		
+		allowPerWorldAttunement = config.getBoolean("allowPerWorldAttunement");
 		
 		loadStrucutre();
 	}

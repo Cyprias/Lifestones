@@ -128,6 +128,27 @@ public class Database {
 		}
 	}
 	
+	public void removeOtherWorldAttunments(String player, String world){
+		if (Config.mysqlEnabled == true){
+			mysql.removeOtherWorldAttunments(player, world);	
+		}else{
+			sqlite.removeOtherWorldAttunments(player, world);
+		}
+
+	}
+	public void removeOtherWorldAttunments(final String player, final String world, Boolean async) {
+		if (async == true){
+			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+				public void run() {
+					removeOtherWorldAttunments(player, world);
+				}
+			});
+			
+		}else{
+			removeOtherWorldAttunments(player, world);
+		}
+	}
+	
 	public void loadAttunments() {
 		if (Config.mysqlEnabled == true){
 			mysql.loadAttunements();

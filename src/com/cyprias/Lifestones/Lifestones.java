@@ -68,11 +68,19 @@ public class Lifestones extends JavaPlugin {
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
 
+		Attunements.onEnable();
+		
+		
 		database.loadDatabases(Config.preferAsyncDBCalls);
 
 		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
+	public void onDisable() {
+		getCommand("lifestones").setExecutor(null);
+		events.unregisterEvents();
+	}
 
+	
 	private void loadLocales(){
 		//Copy any new locale strings to file on disk.
 		YML resLocale = new YML(getResource("enUS.yml"));
@@ -102,9 +110,6 @@ public class Lifestones extends JavaPlugin {
 	}
 	
 	
-	public void onDisable() {
-		getCommand("lifestones").setExecutor(null);
-	}
 
 	
 

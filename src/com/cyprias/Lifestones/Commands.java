@@ -61,7 +61,7 @@ public class Commands implements CommandExecutor {
 				return;
 			}
 
-			Attunement attunement = Attunements.get(player.getName());
+			Attunement attunement = Attunements.get(player);
 
 			player.teleport(attunement.loc);
 			plugin.sendMessage(player, GRAY+L("recalledToLifestone"));

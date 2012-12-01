@@ -17,12 +17,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -43,6 +40,21 @@ public class Events implements Listener {
 		this.plugin = plugin;
 	}
 
+	public void unregisterEvents(){
+		BlockBreakEvent.getHandlerList().unregister(this);
+		BlockBurnEvent.getHandlerList().unregister(this);
+		BlockPistonExtendEvent.getHandlerList().unregister(this);
+		BlockPistonRetractEvent.getHandlerList().unregister(this);
+		BlockPlaceEvent.getHandlerList().unregister(this);
+		EntityChangeBlockEvent.getHandlerList().unregister(this);
+		EntityDamageByEntityEvent.getHandlerList().unregister(this);
+		EntityExplodeEvent.getHandlerList().unregister(this);
+		PlayerCommandPreprocessEvent.getHandlerList().unregister(this);
+		PlayerInteractEvent.getHandlerList().unregister(this);
+		PlayerRespawnEvent.getHandlerList().unregister(this);
+		VersionCheckerEvent.getHandlerList().unregister(this);
+	}
+	
 	/*
 	 * @EventHandler(priority = EventPriority.NORMAL) public void
 	 * onBlockRedstone(BlockRedstoneEvent event) {
@@ -91,11 +103,14 @@ public class Events implements Listener {
 			float pPitch = pLoc.getPitch();
 
 			String pName = player.getName();
-
+			
 			Attunements.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
 			plugin.sendMessage(player, GRAY+L("attunedToLifestone"));
 
 			plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+			if (Config.allowPerWorldAttunement == false)
+				plugin.database.removeOtherWorldAttunments(pName, pWorld,  Config.preferAsyncDBCalls);
+			
 		}
 	}
 
@@ -129,7 +144,7 @@ public class Events implements Listener {
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		plugin.debug(event.getEventName());
 		if (Attunements.containsKey(event.getPlayer().getName())) {
-			Attunement attunement = Attunements.get(event.getPlayer().getName());
+			Attunement attunement = Attunements.get(event.getPlayer());
 			event.setRespawnLocation(attunement.loc);
 			plugin.playerProtections.put(event.getPlayer().getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}
