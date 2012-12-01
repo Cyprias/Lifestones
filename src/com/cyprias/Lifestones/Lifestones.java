@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import com.cyprias.Lifestones.Config.lifestoneStructure;
 import com.wimbli.WorldBorder.WorldBorder;

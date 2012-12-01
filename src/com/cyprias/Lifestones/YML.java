@@ -12,57 +12,39 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class YML extends YamlConfiguration {
 	private static File file = null;
-	private static InputStream fileStream;
 	public YML(InputStream fileStream) {
 		//load yml from resources. 
-		this.fileStream = fileStream;
 		try {
-			load(this.fileStream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			load(fileStream);
+		} catch (IOException e) {e.printStackTrace();
+		} catch (InvalidConfigurationException e) {e.printStackTrace();
 		}
 	}
 	
 	public YML(File pluginDur, String fileName) {
 		//Load yml from directory.
 		this.file = new File(pluginDur, fileName);
+
 		try {
 			load(this.file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException e) {e.printStackTrace();
+		} catch (IOException e) {e.printStackTrace();
+		} catch (InvalidConfigurationException e) {e.printStackTrace();
 		}
 	}
 	
 	public YML(InputStream fileStream, File pluginDur, String fileName) {
 		//Copy yml resource to directory then load it.
-		this.fileStream = fileStream;
-		
+
 		this.file = new File(pluginDur, fileName);
 		if (!this.file.exists())
 			this.file = toFile(fileStream, pluginDur, fileName);
 		
 		try {
 			load(this.file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException e) {e.printStackTrace();
+		} catch (IOException e) {e.printStackTrace();
+		} catch (InvalidConfigurationException e) {e.printStackTrace();
 		}
 	}
 	
@@ -79,18 +61,15 @@ public class YML extends YamlConfiguration {
 			}
 			out.close();
 			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {e.printStackTrace();
 		}
 		return file;
 	}
-	
+
 	public void save(){
 		try {
-			this.save(this.file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			save(file);
+		} catch (IOException e) {e.printStackTrace();
 		}
 	}
 	
