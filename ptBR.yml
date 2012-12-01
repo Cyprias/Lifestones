@@ -1,0 +1,32 @@
+anotherPluginBlockingPlacement:  "Outro plugin bloqueou nossa colocação do Lifestone." -- Needs review
+attunedToLifestone:  "Sintonizado com Lifestone!" -- Needs review
+attuningToLifestone:  "Sintonizando a Lifestone em %s segundos, se mover vai ser cancelado." -- Needs review
+blockProtectedByLifestone:  "Esse bloco está protegido pelo Lifestone." -- Needs review
+cannotModifyLifestone:  "Você não pode modificar o Lifestone." -- Needs review
+cantFindSafeBlock:  "Não é possível encontrar um bloco seguro de se teletransportar para." -- Needs review
+createALifestone:  "Criar um Lifestone no local." -- Needs review
+includeIndexNum:  "Incluir um número de ID da lista Lifestone." -- Needs review
+indexTooHigh:  "%s é muito alta!" -- Needs review
+invalidID:  "ID invalido: %s" -- Needs review
+invalidPageNumber:  "Número da página inválido: %s" -- Needs review
+lifeAllLifestones:  "Listar todos os locais Lifestone" -- Needs review
+lifestoneCreated:  "Lifestone criado!" -- Needs review
+lifestoneDesc:  "Lembre-se para o seu Lifestone." -- Needs review
+lifestoneIndex:  "%s: %s %s %s %s" -- Needs review
+lifestoneUnregistered:  "Lifestone não registrados" -- Needs review
+movedTooFarAttunementFailed:  "Você mudou muito, a sintonia falhou." -- Needs review
+nameAndVersion:  "%s v%s" -- Needs review
+nearestLifestoneAt:  "Lifestone mais próximo está em %s %s %s , %s blocos %s ." -- Needs review
+noLifestoneNear:  "Não há lifestones perto de você." -- Needs review
+noPermission:  "Você não tem permissão: %s" -- Needs review
+notAttunedYet:  "Você não está sintonizados com um Lifestone ainda." -- Needs review
+page:  "Página %s / %s" -- Needs review
+pluginReloaded:  "Plugin recarregado!" -- Needs review
+recalledToLifestone:  "Lembrou a Lifestone!" -- Needs review
+recallingToLifestone:  "Recordando a Lifestone em %s segundos, movimentar para cancelar." -- Needs review
+reloadThePlugin:  "Atualizar o plugin." -- Needs review
+showNearestLifestone:  "Mostrar Lifestone mais próximo." -- Needs review
+teleportingToCoordinates:  "Teletransportar para %s %s %s ." -- Needs review
+tooCloseToAnotherLifestone:  "Você está muito perto de outro Lifestone." -- Needs review
+tpToLifestone:  "Teleportar para um Lifestone" -- Needs review
+tpToRandomLoc:  "Teleportar para um local aleatório no mundo." -- Needs review
