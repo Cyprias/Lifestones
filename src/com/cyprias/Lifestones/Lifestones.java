@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,14 +83,18 @@ public class Lifestones extends JavaPlugin {
 
 	
 	private void loadLocales(){
+		//Copy existing locales into plugin dir, so admin knows what's available. 
+		String localeDir = getDataFolder().separator + "locales" +getDataFolder().separator;
+		new YML(getResource("enUS.yml"), getDataFolder(), localeDir + "enUS.yml", true);
+		new YML(getResource("ptBR.yml"), getDataFolder(), localeDir + "ptBR.yml", true);
+		
 		//Copy any new locale strings to file on disk.
 		YML resLocale = new YML(getResource("enUS.yml"));
-		YML locale = new YML(getResource(Config.localeFile), getDataFolder(), Config.localeFile);
+		YML locale = new YML(getResource(Config.localeFile), getDataFolder(), localeDir+ Config.localeFile);
 		for (String key : resLocale.getKeys(false)) {
 			if (locale.get(key) == null){
 				info("Adding new locale " + key + " = " + resLocale.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));
 				locale.set(key, resLocale.getString(key));
-				locale.save();
 			}
 		}
 		

@@ -48,6 +48,13 @@ public class YML extends YamlConfiguration {
 		}
 	}
 	
+	public YML(InputStream fileStream, File pluginDur, String fileName, Boolean noLoad) {
+		//Just copy the stream to directory, no loading as YML. 
+		this.file = new File(pluginDur, fileName);
+		if (!this.file.exists())
+			this.file = toFile(fileStream, pluginDur, fileName);
+	}
+	
 	//Write a stream to file on disk, return the file object.  
 	private static File toFile(InputStream in, File pluginDur, String fileName) {
 		File file = new File(pluginDur, fileName);
@@ -65,7 +72,7 @@ public class YML extends YamlConfiguration {
 		}
 		return file;
 	}
-
+	
 	public void save(){
 		try {
 			save(file);
