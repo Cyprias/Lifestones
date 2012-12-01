@@ -176,7 +176,7 @@ public class SQLite {
 				if (rs.getString("world").equalsIgnoreCase(bWorld)){
 					
 					if (rs.getInt("x") == bX && rs.getInt("y") == bY && rs.getInt("z") == bZ){
-						System.out.println("Lifestone already in DB!");
+					//	System.out.println("Lifestone already in DB!");
 						rs.close();
 						stat.close();
 						con.close();
@@ -238,7 +238,7 @@ public class SQLite {
 			prep.setFloat(6, yaw);
 			prep.setFloat(7, pitch);
 			
-			System.out.println("Saved attune to DB.");
+			//System.out.println("Saved attune to DB.");
 
 			prep.execute();
 

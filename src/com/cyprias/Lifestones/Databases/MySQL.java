@@ -130,7 +130,7 @@ public class MySQL {
 		}
 
 		if (success > 0){
-			System.out.println("mysql Lifestone already in DB!");
+		//	System.out.println("mysql Lifestone already in DB!");
 			return;
 		}
 			
@@ -206,7 +206,7 @@ public class MySQL {
 		}
 		
 		
-		System.out.println("removeLifestone: " +success );
+		//System.out.println("removeLifestone: " +success );
 		
 	}
 	
