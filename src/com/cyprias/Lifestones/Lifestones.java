@@ -3,7 +3,6 @@ package com.cyprias.Lifestones;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -11,8 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,6 +40,8 @@ public class Lifestones extends JavaPlugin {
 
 		this.database.createTables();
 
+		new Attunements(getServer());
+		
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -54,6 +53,7 @@ public class Lifestones extends JavaPlugin {
 		
 		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
 		log.info(String.format("%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
+
 	}
 
 	public static HashMap<String, String> locales = new HashMap<String, String>();
@@ -76,33 +76,32 @@ public class Lifestones extends JavaPlugin {
 		//Copy any new locale strings to file on disk.
 		YML resLocale = new YML(getResource("enUS.yml"));
 		YML locale = new YML(getResource(Config.localeFile), getDataFolder(), Config.localeFile);
-		for (String key : resLocale.config.getKeys(false)) {
-			if (locale.config.get(key) == null){
+		for (String key : resLocale.getKeys(false)) {
+			if (locale.get(key) == null){
 				info("Adding new locale " + key + " = " + resLocale.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));
-				locale.config.set(key, resLocale.getString(key));
+				locale.set(key, resLocale.getString(key));
 				locale.save();
 			}
 		}
 		
 		//Load locales into our hashmap. 
 		locales.clear();
-		for (String key : locale.config.getKeys(false)) {
-			locales.put(key, locale.config.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));// §
+		for (String key : locale.getKeys(false)) {
+			locales.put(key, locale.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));// §
 		}
 	}
 	
 	private void loadAliases(){
 		YML yml = new YML(getResource("aliases.yml"),getDataFolder(), "aliases.yml");
 		
-		for (String key : yml.config.getKeys(false)) {
-			Events.aliases.put(key, yml.config.getString(key));
+		for (String key : yml.getKeys(false)) {
+			Events.aliases.put(key, yml.getString(key));
 		}
 		
 	}
 	
 	
 	public void onDisable() {
-
 		getCommand("lifestones").setExecutor(null);
 	}
 
@@ -209,7 +208,7 @@ public class Lifestones extends JavaPlugin {
 	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public static HashMap<Block, Block> isProtectedCache = new HashMap<Block, Block>();
 
-	private World getWorld(String worldName){
+	public World getWorld(String worldName){
 		for (int i=0; i< getServer().getWorlds().size(); i++){
 			if (getServer().getWorlds().get(i).getName().equalsIgnoreCase(worldName)){
 				return getServer().getWorlds().get(i);
@@ -429,4 +428,6 @@ public class Lifestones extends JavaPlugin {
 		}
 		return value;
 	}
+	
+
 }

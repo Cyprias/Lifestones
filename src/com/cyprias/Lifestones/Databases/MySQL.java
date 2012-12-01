@@ -285,11 +285,8 @@ public class MySQL {
 			
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				Attunements.players.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
-				
-				
+				Attunements.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
 			}
-			
 			statement.close();
 			con.close();
 		} catch (SQLException e) {

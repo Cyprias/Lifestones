@@ -83,7 +83,7 @@ public class SQLite {
 			e.printStackTrace();
 		}
 	}
-
+	/*
 	public void sqliteTest1() {
 		try {
 
@@ -123,7 +123,7 @@ public class SQLite {
 			e.printStackTrace();
 		}
 	}
-
+*/
 	
 	public void loadAttunements() {
 		
@@ -132,7 +132,7 @@ public class SQLite {
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from Attunements;");
 			while (rs.next()) {
-				Attunements.players.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
+				Attunements.put(rs.getString("player"), new Attunement(rs.getString("player"), rs.getString("world"), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch")));
 			}
 			rs.close();
 			con.close();

@@ -92,7 +92,7 @@ public class Events implements Listener {
 
 			String pName = player.getName();
 
-			Attunements.players.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
+			Attunements.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
 			plugin.sendMessage(player, GRAY+L("attunedToLifestone"));
 
 			plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
@@ -128,11 +128,9 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		plugin.debug(event.getEventName());
-		if (Attunements.players.containsKey(event.getPlayer().getName())) {
-			Attunement attunement = Attunements.players.get(event.getPlayer().getName());
-			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw,
-				attunement.pitch);
-			event.setRespawnLocation(loc);
+		if (Attunements.containsKey(event.getPlayer().getName())) {
+			Attunement attunement = Attunements.get(event.getPlayer().getName());
+			event.setRespawnLocation(attunement.loc);
 			plugin.playerProtections.put(event.getPlayer().getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}
 	}

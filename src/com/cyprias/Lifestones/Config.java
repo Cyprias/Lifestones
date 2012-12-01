@@ -85,7 +85,7 @@ public class Config {
 	private void loadStrucutre(){
 		YML yml = new YML(plugin.getResource("structure.yml"),plugin.getDataFolder(), "structure.yml");
 
-		ConfigurationSection dStructure = yml.config.getConfigurationSection("structure");
+		ConfigurationSection dStructure = yml.getConfigurationSection("structure");
 		
 		Block block;
 		structureBlocks.clear();

@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 
+import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Databases.MySQL;
 import com.cyprias.Lifestones.Databases.SQLite;
 
@@ -168,5 +169,4 @@ public class Database {
 			loadLifestones();
 		}
 	}
-	
 }

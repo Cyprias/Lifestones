@@ -61,12 +61,9 @@ public class Commands implements CommandExecutor {
 				return;
 			}
 
-			Attunement attunement = Attunements.players.get(player.getName());
+			Attunement attunement = Attunements.get(player.getName());
 
-			Location loc = new Location(plugin.getServer().getWorld(attunement.world), attunement.x, attunement.y, attunement.z, attunement.yaw,
-				attunement.pitch);
-
-			player.teleport(loc);
+			player.teleport(attunement.loc);
 			plugin.sendMessage(player, GRAY+L("recalledToLifestone"));
 			
 			
@@ -92,7 +89,7 @@ public class Commands implements CommandExecutor {
 			
 			
 			
-			if (!(Attunements.players.containsKey(sender.getName()))) {
+			if (!(Attunements.containsKey(sender.getName()))) {
 				plugin.sendMessage(sender, GRAY+L("notAttunedYet"));
 				return true;
 			}

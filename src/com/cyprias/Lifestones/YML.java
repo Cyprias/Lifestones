@@ -8,24 +8,40 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class YML {
-	private File file = null;;
-	public FileConfiguration config = new YamlConfiguration();
-	private InputStream fileStream;
-
+public class YML extends YamlConfiguration {
+	private static File file = null;
+	private static InputStream fileStream;
 	public YML(InputStream fileStream) {
 		//load yml from resources. 
 		this.fileStream = fileStream;
-		load();
+		try {
+			load(this.fileStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public YML(File pluginDur, String fileName) {
 		//Load yml from directory.
 		this.file = new File(pluginDur, fileName);
-		load();
+		try {
+			load(this.file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public YML(InputStream fileStream, File pluginDur, String fileName) {
@@ -36,41 +52,18 @@ public class YML {
 		if (!this.file.exists())
 			this.file = toFile(fileStream, pluginDur, fileName);
 		
-		load();
-	}
-
-	//Load yml from disk.
-	public void load(){
-		if (this.file != null){
-			try {
-				this.config.load(this.file);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else{
-			config = getResourceYMLFile(this.fileStream);
-		}
-	}
-	
-	//Save yml to disk.
-	public void save(){
 		try {
-			this.config.save(this.file);
+			load(this.file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-	
-	public String getString(String key){
-		return config.getString(key);
 	}
 	
 	//Write a stream to file on disk, return the file object.  
@@ -92,20 +85,13 @@ public class YML {
 		return file;
 	}
 	
-	//Get the yml file inside the jar. 
-	private static FileConfiguration getResourceYMLFile(InputStream fileStream){
-		YamlConfiguration file = new YamlConfiguration();
+	public void save(){
 		try {
-			file.load(fileStream);
+			this.save(this.file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		
-		return file;
 	}
+	
 }
