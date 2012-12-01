@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -25,6 +26,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.material.MaterialData;
@@ -357,5 +359,18 @@ public class Events implements Listener {
 			
 		}
 		
+	}
+	
+	public static HashMap<String, String> aliases = new HashMap<String, String>();
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+		String msg = event.getMessage();
+		String command = msg.split(" ")[0].replace("/", "");
+
+		if (aliases.containsKey(command.toLowerCase())) {
+			event.setMessage(msg.replaceFirst("/" + command, "/" + aliases.get(command.toLowerCase())));
+			return;
+		}
 	}
 }

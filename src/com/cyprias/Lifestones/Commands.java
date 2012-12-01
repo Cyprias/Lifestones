@@ -274,6 +274,12 @@ public class Commands implements CommandExecutor {
 					
 					
 					int rows = plugin.lifestoneLocations.size();
+					
+					if (rows == 0 ){
+						plugin.sendMessage(sender, GRAY + L("noRegisteredLifestones"));
+						return true;
+					}
+					
 					int maxPages = (int) Math.ceil((float) rows / (float) Config.rowsPerPage);
 
 					if (rows > Config.rowsPerPage){
@@ -355,16 +361,16 @@ public class Commands implements CommandExecutor {
 				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("lifeAllLifestones"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.tp") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("tpToLifestone"), true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone tp [#]" + GRAY+" - " + L("tpToLifestone"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.near") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("showNearestLifestone"), true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone near" + GRAY+" - " + L("showNearestLifestone"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("reloadThePlugin"), true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone reload" + GRAY+" - " + L("reloadThePlugin"), true, false);
 			
 			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("tpToRandomLoc"), true, false);
+				plugin.sendMessage(sender, GREEN+"/lifestone randomtp" + GRAY+" - " + L("tpToRandomLoc"), true, false);
 			
 			return true;
 		}

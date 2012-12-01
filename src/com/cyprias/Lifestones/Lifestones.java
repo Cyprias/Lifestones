@@ -53,7 +53,7 @@ public class Lifestones extends JavaPlugin {
 			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		
 		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
-		log.info(String.format("f%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
+		log.info(String.format("%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
 	}
 
 	public static HashMap<String, String> locales = new HashMap<String, String>();
@@ -61,6 +61,7 @@ public class Lifestones extends JavaPlugin {
 		config.reloadOurConfig();
 		
 		loadLocales();
+		loadAliases();
 		
 		getCommand("lifestone").setExecutor(this.commands);
 		getCommand("lifestones").setExecutor(this.commands);
@@ -68,7 +69,7 @@ public class Lifestones extends JavaPlugin {
 
 		database.loadDatabases(Config.preferAsyncDBCalls);
 
-		log.info(String.format("f%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
+		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
 
 	private void loadLocales(){
@@ -89,6 +90,16 @@ public class Lifestones extends JavaPlugin {
 			locales.put(key, locale.config.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));// §
 		}
 	}
+	
+	private void loadAliases(){
+		YML yml = new YML(getResource("aliases.yml"),getDataFolder(), "aliases.yml");
+		
+		for (String key : yml.config.getKeys(false)) {
+			Events.aliases.put(key, yml.config.getString(key));
+		}
+		
+	}
+	
 	
 	public void onDisable() {
 
