@@ -1,32 +1,32 @@
-anotherPluginBlockingPlacement:  "Outro plugin bloqueou nossa colocação do Lifestone." -- Needs review
-attunedToLifestone:  "Sintonizado com Lifestone!" -- Needs review
-attuningToLifestone:  "Sintonizando a Lifestone em %s segundos, se mover vai ser cancelado." -- Needs review
-blockProtectedByLifestone:  "Esse bloco está protegido pelo Lifestone." -- Needs review
-cannotModifyLifestone:  "Você não pode modificar o Lifestone." -- Needs review
-cantFindSafeBlock:  "Não é possível encontrar um bloco seguro de se teletransportar para." -- Needs review
-createALifestone:  "Criar um Lifestone no local." -- Needs review
-includeIndexNum:  "Incluir um número de ID da lista Lifestone." -- Needs review
-indexTooHigh:  "%s é muito alta!" -- Needs review
-invalidID:  "ID invalido: %s" -- Needs review
-invalidPageNumber:  "Número da página inválido: %s" -- Needs review
-lifeAllLifestones:  "Listar todos os locais Lifestone" -- Needs review
-lifestoneCreated:  "Lifestone criado!" -- Needs review
-lifestoneDesc:  "Lembre-se para o seu Lifestone." -- Needs review
-lifestoneIndex:  "%s: %s %s %s %s" -- Needs review
-lifestoneUnregistered:  "Lifestone não registrados" -- Needs review
-movedTooFarAttunementFailed:  "Você mudou muito, a sintonia falhou." -- Needs review
-nameAndVersion:  "%s v%s" -- Needs review
-nearestLifestoneAt:  "Lifestone mais próximo está em %s %s %s , %s blocos %s ." -- Needs review
-noLifestoneNear:  "Não há lifestones perto de você." -- Needs review
-noPermission:  "Você não tem permissão: %s" -- Needs review
-notAttunedYet:  "Você não está sintonizados com um Lifestone ainda." -- Needs review
-page:  "Página %s / %s" -- Needs review
-pluginReloaded:  "Plugin recarregado!" -- Needs review
-recalledToLifestone:  "Lembrou a Lifestone!" -- Needs review
-recallingToLifestone:  "Recordando a Lifestone em %s segundos, movimentar para cancelar." -- Needs review
-reloadThePlugin:  "Atualizar o plugin." -- Needs review
-showNearestLifestone:  "Mostrar Lifestone mais próximo." -- Needs review
-teleportingToCoordinates:  "Teletransportar para %s %s %s ." -- Needs review
-tooCloseToAnotherLifestone:  "Você está muito perto de outro Lifestone." -- Needs review
-tpToLifestone:  "Teleportar para um Lifestone" -- Needs review
-tpToRandomLoc:  "Teleportar para um local aleatório no mundo." -- Needs review
+anotherPluginBlockingPlacement: "Outro plugin bloqueou nossa colocação do Lifestone."
+attunedToLifestone: "Sintonizado com Lifestone!"
+attuningToLifestone: "Sintonizando a Lifestone em %s segundos, se mover vai ser cancelado."
+blockProtectedByLifestone: "Esse bloco está protegido pelo Lifestone."
+cannotModifyLifestone: "Você não pode modificar o Lifestone."
+cantFindSafeBlock: "Não é possível encontrar um bloco seguro de se teletransportar para."
+createALifestone: "Criar um Lifestone no local."
+includeIndexNum: "Incluir um número de ID da lista Lifestone."
+indexTooHigh: "%s é muito alta!"
+invalidID: "ID invalido: %s"
+invalidPageNumber: "Número da página inválido: %s"
+lifeAllLifestones: "Listar todos os locais Lifestone"
+lifestoneCreated: "Lifestone criado!"
+lifestoneDesc: "Lembre-se para o seu Lifestone."
+lifestoneIndex: "%s: %s %s %s %s"
+lifestoneUnregistered: "Lifestone não registrados"
+movedTooFarAttunementFailed: "Você mudou muito, a sintonia falhou."
+nameAndVersion: "%s v%s"
+nearestLifestoneAt: "Lifestone mais próximo está em %s %s %s , %s blocos %s ."
+noLifestoneNear: "Não há lifestones perto de você."
+noPermission: "Você não tem permissão: %s"
+notAttunedYet: "Você não está sintonizados com um Lifestone ainda."
+page: "Página %s / %s"
+pluginReloaded: "Plugin recarregado!"
+recalledToLifestone: "Lembrou a Lifestone!"
+recallingToLifestone: "Recordando a Lifestone em %s segundos, movimentar para cancelar."
+reloadThePlugin: "Atualizar o plugin."
+showNearestLifestone: "Mostrar Lifestone mais próximo."
+teleportingToCoordinates: "Teletransportar para %s %s %s ."
+tooCloseToAnotherLifestone: "Você está muito perto de outro Lifestone."
+tpToLifestone: "Teleportar para um Lifestone"
+tpToRandomLoc: "Teleportar para um local aleatório no mundo."
