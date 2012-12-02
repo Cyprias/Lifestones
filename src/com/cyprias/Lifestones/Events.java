@@ -294,7 +294,7 @@ public class Events implements Listener {
 			Block cBlock = plugin.getLifestoneCenterBlock(block);
 
 			plugin.database.removeLifestone(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ(), Config.preferAsyncDBCalls);
-			plugin.unregsterLifestone(new lifestoneLoc(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
+			plugin.unregsterLifestone(event.getPlayer(), new lifestoneLoc(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
 
 			plugin.sendMessage(player, GRAY+L("lifestoneUnregistered"));
 

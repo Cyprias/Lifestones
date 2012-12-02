@@ -120,7 +120,7 @@ public class Commands implements CommandExecutor {
 					lifestoneStructure lsStructure;
 					BlockPlaceEvent e;
 
-					if (Config.callBlockPlaceEventUponCreating == true){
+					if (Config.callBlockPlaceEvent == true){
 						for (int i = 0; i < Config.structureBlocks.size(); i++) {
 							lsStructure = Config.structureBlocks.get(i);
 							rBlock = pBlock.getRelative(lsStructure.rX, lsStructure.rY, lsStructure.rZ);
@@ -140,7 +140,7 @@ public class Commands implements CommandExecutor {
 						rBlock = pBlock.getRelative(lsStructure.rX, lsStructure.rY, lsStructure.rZ);
 
 						
-						if (Config.callBlockPlaceEventUponCreating == true){
+						if (Config.callBlockPlaceEvent == true){
 							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
 							e.getBlock().setTypeId(lsStructure.bID);
 							e.getBlock().setData(lsStructure.bData);

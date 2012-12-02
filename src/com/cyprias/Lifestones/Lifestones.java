@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -256,30 +257,22 @@ public class Lifestones extends JavaPlugin {
 		}
 	}
 
-	private void removeCachedSurroundBlocks(lifestoneLoc loc) {
+	private void removeCachedSurroundBlocks(Player player, lifestoneLoc loc) {
 		Block cBlock = getServer().getWorld(loc.world).getBlockAt(loc.X, loc.Y, loc.Z);
 		lifestoneStructure lsBlock;
 		Block rBlock;
 		// for (int b=0; b<Config.structureBlocks.size();b++){
-		for (int b = Config.structureBlocks.size() - 1; b >= 0; b--) {// Backwards
-																		// so
-																		// our
-																		// buttons
-																		// are
-																		// removed
-																		// first,
-																		// not
-																		// fall
-																		// on
-																		// the
-																		// ground.
+		BlockPlaceEvent e;
+		for (int b = Config.structureBlocks.size() - 1; b >= 0; b--) {
 			lsBlock = Config.structureBlocks.get(b);
-			// isLifestoneCache.put(cBlock,
-			// getServer().getWorld(loc.world).getBlockAt(loc.X+lsBlock.rX ,
-			// loc.Y+lsBlock.rY, loc.Z+lsBlock.rZ));
 			rBlock = getServer().getWorld(loc.world).getBlockAt(loc.X + lsBlock.rX, loc.Y + lsBlock.rY, loc.Z + lsBlock.rZ);
 			isLifestoneCache.remove(rBlock);
 			if (Config.setUnregisteredLifestonesToAir == true) {
+				if (Config.callBlockPlaceEvent == true){
+					e = new BlockPlaceEvent(rBlock, rBlock.getState(), cBlock, player.getItemInHand(), player, false);
+					e.getBlock().setTypeId(0);
+					player.getServer().getPluginManager().callEvent(e);
+				}
 				rBlock.setTypeId(0);
 			}
 		}
@@ -297,13 +290,13 @@ public class Lifestones extends JavaPlugin {
 		}
 	}
 
-	public void unregsterLifestone(final lifestoneLoc lsLoc) {
+	public void unregsterLifestone(Player player, final lifestoneLoc lsLoc) {
 		for (int i = 0; i < lifestoneLocations.size(); i++) {
 			if (lifestoneLocations.get(i).world.equals(lsLoc.world)) {
 				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z) {
 					lifestoneLocations.remove(i);
 
-					removeCachedSurroundBlocks(lsLoc);
+					removeCachedSurroundBlocks(player, lsLoc);
 
 					return;
 				}
