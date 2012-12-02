@@ -70,16 +70,16 @@ public class SQLite {
 				stat.executeUpdate("CREATE TABLE `Lifestones` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `world` VARCHAR(32) NOT NULL, `x` INT NOT NULL, `y` INT NOT NULL, `z` INT NOT NULL)");
 			}
 
-			if (tableExists("Attunements") == true) {//old table;
-				System.out.println("Removing unique attribute from player in Attunements.");
-				stat.executeUpdate("ALTER TABLE Attunements DROP INDEX player");
-				//stat.executeUpdate("ALTER TABLE `Attunements` add unique index(player, world);");
-				stat.executeUpdate("RENAME TABLE `Attunements` TO `Attunements_v2` ");
-			}else if (tableExists(attunementsTbl) == false) {
+			if (tableExists(attunementsTbl) == false) {
 				System.out.println("Creating Lifestones.Attunements table.");
 				stat.executeUpdate("CREATE TABLE `"+attunementsTbl+"` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `player` VARCHAR(32) NOT NULL, `world` VARCHAR(32) NOT NULL, `x` DOUBLE NOT NULL, `y` DOUBLE NOT NULL, `z` DOUBLE NOT NULL, `yaw` FLOAT NOT NULL, `pitch` FLOAT NOT NULL)");
-
 			}
+			
+			if (tableExists("Attunements") == true) {//old table;
+				System.out.println("Removing unique attribute from player in Attunements.");
+				stat.executeUpdate("INSERT INTO `"+attunementsTbl+"` SELECT * FROM `Attunements`;");
+				stat.executeUpdate("DROP TABLE `Attunements`;");
+			} 
 			
 			
 			stat.close();
