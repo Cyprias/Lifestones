@@ -8,33 +8,38 @@ import java.sql.Statement;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Databases.MySQL;
 import com.cyprias.Lifestones.Databases.SQLite;
+import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class Database {
-	public Lifestones plugin;
-	public SQLite sqlite;
-	public MySQL mysql;
+	private static Lifestones plugin;
+	//private SQLite sqlite;
+	//private MySQL mysql;
+	static BukkitScheduler scheduler;
 	public Database(Lifestones plugin) {
 		this.plugin = plugin;
-		this.sqlite = new SQLite(this, plugin.getDataFolder());
-		this.mysql = new MySQL(this, plugin.getDataFolder());
+		this.scheduler = plugin.getServer().getScheduler();
+
+		new SQLite(this, plugin.getDataFolder());
+		new MySQL(this);
 	}
 	
 
-	public void createTables(){
+	public static void createTables(){
 		if (Config.mysqlEnabled == true){
-			mysql.createTables();
+			MySQL.createTables();
 		}else{
-			sqlite.createTables();
+			SQLite.createTables();
 		}
 	}
 	
 	public void createTables(Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					createTables();
 				}
@@ -45,14 +50,14 @@ public class Database {
 		}
 	}
 	
-	public void loadDatabases(){
+	public static void loadDatabases(){
 		loadLifestones();
 		loadAttunments();
 	}
 		
-	public void loadDatabases(Boolean async) {
+	public static void loadDatabases(Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					loadDatabases();
 				}
@@ -63,17 +68,17 @@ public class Database {
 		}
 	}
 	
-	public void saveLifestone(String world, int X, int Y, int Z){
+	public static void saveLifestone(String world, int X, int Y, int Z){
 		if (Config.mysqlEnabled == true){
-			mysql.saveLifestone(world, X, Y, Z);
+			MySQL.saveLifestone(world, X, Y, Z);
 		}else{
-			sqlite.saveLifestone(world, X, Y, Z);
+			SQLite.saveLifestone(world, X, Y, Z);
 		}
 
 	}
-	public void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
+	public static void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					saveLifestone(world, X, Y, Z);
 				}
@@ -84,18 +89,18 @@ public class Database {
 		}
 	}
 	
-	public void removeLifestone(String world, int X, int Y, int Z){
+	public static void removeLifestone(String world, int X, int Y, int Z){
 		if (Config.mysqlEnabled == true){
-			mysql.removeLifestone(world, X, Y, Z);	
+			MySQL.removeLifestone(world, X, Y, Z);	
 		}else{
-			sqlite.removeLifestone(world, X, Y, Z);
+			SQLite.removeLifestone(world, X, Y, Z);
 		}
 
 	}
 	
-	public void removeLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
+	public static void removeLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					removeLifestone(world, X, Y, Z);
 				}
@@ -106,18 +111,18 @@ public class Database {
 		}
 	}
 	
-	public void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch){
+	public static void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch){
 		if (Config.mysqlEnabled == true){
-			mysql.saveAttunment(player, world, x, y, z,yaw,pitch);
+			MySQL.saveAttunment(player, world, x, y, z,yaw,pitch);
 		}else{
-			sqlite.saveAttunment(player, world, x, y, z,yaw,pitch);
+			SQLite.saveAttunment(player, world, x, y, z,yaw,pitch);
 		}
 
 	}
 	
-	public void saveAttunment(final String player, final String world, final double x, final double y, final double z, final float yaw, final float pitch, Boolean async) {
+	public static void saveAttunment(final String player, final String world, final double x, final double y, final double z, final float yaw, final float pitch, Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					saveAttunment(player, world, x, y, z,yaw,pitch);
 				}
@@ -128,17 +133,17 @@ public class Database {
 		}
 	}
 	
-	public void removeOtherWorldAttunments(String player, String world){
+	public static void removeOtherWorldAttunments(String player, String world){
 		if (Config.mysqlEnabled == true){
-			mysql.removeOtherWorldAttunments(player, world);	
+			MySQL.removeOtherWorldAttunments(player, world);	
 		}else{
-			sqlite.removeOtherWorldAttunments(player, world);
+			SQLite.removeOtherWorldAttunments(player, world);
 		}
 
 	}
-	public void removeOtherWorldAttunments(final String player, final String world, Boolean async) {
+	public static void removeOtherWorldAttunments(final String player, final String world, Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					removeOtherWorldAttunments(player, world);
 				}
@@ -149,17 +154,17 @@ public class Database {
 		}
 	}
 	
-	public void loadAttunments() {
+	public static void loadAttunments() {
 		if (Config.mysqlEnabled == true){
-			mysql.loadAttunements();
+			MySQL.loadAttunements();
 		}else{
-			sqlite.loadAttunements();
+			SQLite.loadAttunements();
 		}
 	}
 	
 	public void loadAttunments(Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					loadAttunments();
 				}
@@ -170,17 +175,17 @@ public class Database {
 		}
 	}
 	
-	public void loadLifestones() {
+	public static void loadLifestones() {
 		if (Config.mysqlEnabled == true){
-			mysql.loadLifestones();
+			MySQL.loadLifestones();
 		}else{
-			sqlite.loadLifestones();
+			SQLite.loadLifestones();
 		}
 	}
 	
 	public void loadLifestones(Boolean async) {
 		if (async == true){
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					loadLifestones();
 				}
@@ -189,5 +194,9 @@ public class Database {
 		}else{
 			loadLifestones();
 		}
+	}
+	
+	public void regsterLifestone(final lifestoneLoc lsLoc) {
+		plugin.regsterLifestone(lsLoc);
 	}
 }

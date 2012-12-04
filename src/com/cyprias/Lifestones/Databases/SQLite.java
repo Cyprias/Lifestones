@@ -17,10 +17,10 @@ import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class SQLite {
-	private Database database;
+	private static Database database;
 	private String pluginPath;
 
-	private String sqlDB;
+	private static String sqlDB;
 
 	public SQLite(Database database, File file) {
 		this.database = database;
@@ -29,7 +29,7 @@ public class SQLite {
 		sqlDB = "jdbc:sqlite:" + pluginPath + "database.sqlite";
 	}
 
-	public boolean tableExists(String tableName) {
+	public static boolean tableExists(String tableName) {
 		boolean exists = false;
 		String query;
 		
@@ -58,7 +58,7 @@ public class SQLite {
 
 	static String attunementsTbl = "Attunements_v2";
 	
-	public void createTables() {
+	public static void createTables() {
 		//database.plugin.debug("Creating SQLite tables...");
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -134,7 +134,7 @@ public class SQLite {
 	}
 */
 	
-	public void loadAttunements() {
+	public static void loadAttunements() {
 		
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
@@ -152,14 +152,14 @@ public class SQLite {
 		
 	}
 	
-	public void loadLifestones() {
+	public static void loadLifestones() {
 		
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from Lifestones;");
 			while (rs.next()) {
-				database.plugin.regsterLifestone(new lifestoneLoc(rs.getString("world"), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
+				database.regsterLifestone(new lifestoneLoc(rs.getString("world"), rs.getInt("x"), rs.getInt("y"), rs.getInt("z")));
 			}
 			rs.close();
 			con.close();
@@ -168,7 +168,7 @@ public class SQLite {
 		
 	}
 	
-	public void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
+	public static void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
 		//String bWorld = block.getWorld().getName();
 		//int bX, bY, bZ;
 		//bX = block.getX();
@@ -212,7 +212,7 @@ public class SQLite {
 		}
 	}
 	
-	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
+	public static void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
 
@@ -261,7 +261,7 @@ public class SQLite {
 	}
 	
 	
-	public void removeLifestone(String bWorld, int bX, int bY, int bZ) {
+	public static void removeLifestone(String bWorld, int bX, int bY, int bZ) {
 		
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);
@@ -285,7 +285,7 @@ public class SQLite {
 		
 	}
 
-	public void removeOtherWorldAttunments(String player, String world) {
+	public static void removeOtherWorldAttunments(String player, String world) {
 		
 		try {
 			Connection con = DriverManager.getConnection(sqlDB);

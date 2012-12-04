@@ -107,9 +107,9 @@ public class Events implements Listener {
 			Attunements.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
 			plugin.sendMessage(player, GRAY+L("attunedToLifestone"));
 
-			plugin.database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+			Database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
 			if (Config.allowPerWorldAttunement == false)
-				plugin.database.removeOtherWorldAttunments(pName, pWorld,  Config.preferAsyncDBCalls);
+				Database.removeOtherWorldAttunments(pName, pWorld,  Config.preferAsyncDBCalls);
 			
 		}
 	}
@@ -293,7 +293,7 @@ public class Events implements Listener {
 			// plugin.isLifestoneCache.get(block)
 			Block cBlock = plugin.getLifestoneCenterBlock(block);
 
-			plugin.database.removeLifestone(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ(), Config.preferAsyncDBCalls);
+			Database.removeLifestone(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ(), Config.preferAsyncDBCalls);
 			plugin.unregsterLifestone(event.getPlayer(), new lifestoneLoc(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
 
 			plugin.sendMessage(player, GRAY+L("lifestoneUnregistered"));

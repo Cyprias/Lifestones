@@ -18,10 +18,10 @@ import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class MySQL {
 
-	private Database database;
+	private static Database database;
 	private String pluginPath;
 
-	public MySQL(Database database, File dataFolder) {
+	public MySQL(Database database) {
 		this.database = database;
 	//	try {Class.forName("com.mysql.jdbc.Driver");} catch (ClassNotFoundException e) {e.printStackTrace();}
 	}
@@ -43,7 +43,7 @@ public class MySQL {
 		return null;
 	}
 	
-	public boolean tableExists(String tableName) {
+	public static boolean tableExists(String tableName) {
 		boolean exists = false;
 		try {
 			Connection con = getSQLConnection();
@@ -72,7 +72,7 @@ public class MySQL {
 		return exists;
 	}
 
-	public void createTables() {
+	public static void createTables() {
 		String query;
 		Connection con = getSQLConnection();
 		PreparedStatement statement = null;
@@ -106,7 +106,7 @@ public class MySQL {
 		}
 	}
 
-	public void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
+	public static void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
 		String table = Config.sqlPrefix + "Lifestones";
 
 		Connection con = getSQLConnection();
@@ -165,7 +165,7 @@ public class MySQL {
 	}
 	
 	
-	public void loadLifestones() {
+	public static void loadLifestones() {
 		String table = Config.sqlPrefix + "Lifestones";
 
 		Connection con = getSQLConnection();
@@ -179,8 +179,7 @@ public class MySQL {
 			
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {
-				database.plugin.regsterLifestone(new lifestoneLoc(result.getString("world"), result.getInt("x"), result.getInt("y"), result.getInt("z")));
-				
+				database.regsterLifestone(new lifestoneLoc(result.getString("world"), result.getInt("x"), result.getInt("y"), result.getInt("z")));
 			}
 			
 			statement.close();
@@ -189,7 +188,7 @@ public class MySQL {
 			e.printStackTrace();
 		}
 	}
-	public void removeLifestone(String bWorld, int bX, int bY, int bZ) {
+	public static void removeLifestone(String bWorld, int bX, int bY, int bZ) {
 		String table = Config.sqlPrefix + "Lifestones";
 		int success = 0;
 		Connection con = getSQLConnection();
@@ -215,7 +214,7 @@ public class MySQL {
 		
 	}
 	
-	public void removeOtherWorldAttunments(String player, String world) {
+	public static void removeOtherWorldAttunments(String player, String world) {
 		String table = Config.sqlPrefix + "Attunements_v2";
 		Connection con = getSQLConnection();
 		PreparedStatement statement = null;
@@ -238,7 +237,7 @@ public class MySQL {
 		
 	}
 	
-	public void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
+	public static void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
 		String table = Config.sqlPrefix + "Attunements_v2";
 
 		Connection con = getSQLConnection();
@@ -299,7 +298,7 @@ public class MySQL {
 		}
 	}
 	
-	public void loadAttunements() {
+	public static void loadAttunements() {
 		String table = Config.sqlPrefix + "Attunements_v2";
 
 		Connection con = getSQLConnection();

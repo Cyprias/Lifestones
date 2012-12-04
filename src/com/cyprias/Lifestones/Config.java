@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 
 public class Config {
-	private Lifestones plugin;
+	private static Lifestones plugin;
 	private static Configuration config;
 	
 
@@ -26,13 +26,15 @@ public class Config {
 		config.options().copyDefaults(true);
 		plugin.saveConfig();
 	}
-	
-	public void reloadOurConfig(){
+	public static void onEnable(){
+		reloadOurConfig();
+	}
+	public static void reloadOurConfig(){
 		plugin.reloadConfig();
 		config = plugin.getConfig().getRoot();
 		loadConfigOpts();
 	}
-	private void loadConfigOpts(){
+	private static void loadConfigOpts(){
 		preferAsyncDBCalls = config.getBoolean("preferAsyncDBCalls");
 		setUnregisteredLifestonesToAir = config.getBoolean("setUnregisteredLifestonesToAir");
 		protectLifestoneRadius = config.getInt("protectLifestoneRadius");
@@ -84,7 +86,7 @@ public class Config {
 	static List<lifestoneStructure> structureBlocks = new ArrayList<lifestoneStructure>();
 	
 	
-	private void loadStrucutre(){
+	private static void loadStrucutre(){
 		YML yml = new YML(plugin.getResource("structure.yml"),plugin.getDataFolder(), "structure.yml");
 
 		ConfigurationSection dStructure = yml.getConfigurationSection("structure");

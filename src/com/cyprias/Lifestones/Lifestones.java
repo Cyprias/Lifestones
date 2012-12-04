@@ -23,10 +23,7 @@ public class Lifestones extends JavaPlugin {
 	public static String chatPrefix = "§f[§aLs§f] ";
 	static String pluginName;
 	public Commands commands;
-	public Config config;
-	//public YML yml;
 	public Events events;
-	public Database database;
 	public HashMap<String, Double> playerProtections = new HashMap<String, Double>();
 	private WorldBorder wb;
 	private Logger log = Logger.getLogger("Minecraft");
@@ -34,17 +31,15 @@ public class Lifestones extends JavaPlugin {
 	public void onLoad() {
 		pluginName = getDescription().getName();
 
-	//	this.yml = new YML(this);
-		this.config = new Config(this);
-		config.reloadOurConfig();
+		new Config(this);
+		Config.reloadOurConfig();
+		new Attunements(getServer());
+		new Database(this);
+		Database.createTables();
+
 		this.commands = new Commands(this);
 		this.events = new Events(this);
-		this.database = new Database(this);
 
-		this.database.createTables();
-
-		new Attunements(getServer());
-		
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -56,12 +51,11 @@ public class Lifestones extends JavaPlugin {
 		
 		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
 		log.info(String.format("%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
-
 	}
 
 	public static HashMap<String, String> locales = new HashMap<String, String>();
 	public void onEnable() {
-		config.reloadOurConfig();
+		Config.onEnable();
 		
 		loadLocales();
 		loadAliases();
@@ -71,9 +65,7 @@ public class Lifestones extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.events, this);
 
 		Attunements.onEnable();
-		
-		
-		database.loadDatabases(Config.preferAsyncDBCalls);
+		Database.loadDatabases(Config.preferAsyncDBCalls);
 
 		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
@@ -84,8 +76,9 @@ public class Lifestones extends JavaPlugin {
 
 	
 	private void loadLocales(){
-		//Copy existing locales into plugin dir, so admin knows what's available. 
 		String localeDir = getDataFolder().separator + "locales" +getDataFolder().separator;
+		
+		//Copy existing locales into plugin dir, so admin knows what's available. 
 		new YML(getResource("enUS.yml"), getDataFolder(), localeDir + "enUS.yml", true);
 		new YML(getResource("ptBR.yml"), getDataFolder(), localeDir + "ptBR.yml", true);
 		
