@@ -292,7 +292,7 @@ public class Commands implements CommandExecutor {
 					lifestoneLoc ls; 
 					for (int i = start; i < end; i++) {
 						ls = plugin.lifestoneLocations.get(i);
-						plugin.sendMessage(sender, GRAY+F("lifestoneIndex", GREEN+i+1+GRAY, GREEN+ls.world+GRAY, GREEN+ls.X+GRAY, GREEN+ls.Y+GRAY, GREEN+ls.Z+GRAY), false);
+						plugin.sendMessage(sender, GRAY+F("lifestoneIndex", GREEN+(i+1)+GRAY, GREEN+ls.world+GRAY, GREEN+ls.X+GRAY, GREEN+ls.Y+GRAY, GREEN+ls.Z+GRAY), false);
 
 					}
 					return true;
