@@ -331,7 +331,7 @@ public class Lifestones extends JavaPlugin {
 			bZ = wb.GetWorldBorder(world.getName()).getZ();
 		}
 		
-		if (fails >= 0)
+		if (fails >= 10)
 			return null;
 		
 		
