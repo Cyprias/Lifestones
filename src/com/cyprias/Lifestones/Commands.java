@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -312,9 +313,11 @@ public class Commands implements CommandExecutor {
 						plugin.sendMessage(sender, GRAY+L("includeIndexNum"));
 						return true;
 					}
-						
+					if (lsID<=0){
+						plugin.sendMessage(sender, GRAY+F("invalidID",args[1]));
+						return true;
+					}
 					lsID-=1;
-					
 					if (lsID > plugin.lifestoneLocations.size()){
 						plugin.sendMessage(sender, GRAY+F("indexTooHigh",GREEN+lsID+GRAY));
 						return true;
@@ -322,14 +325,16 @@ public class Commands implements CommandExecutor {
 					
 					lifestoneLoc lsLoc = plugin.lifestoneLocations.get(lsID);
 					
-					Block lsBlock = plugin.getServer().getWorld(lsLoc.world).getBlockAt(lsLoc.X, lsLoc.Y, lsLoc.Z);
+					World lsWorld = plugin.getServer().getWorld(lsLoc.world);
+					
+					Block lsBlock = lsWorld.getBlockAt(lsLoc.X, lsLoc.Y, lsLoc.Z);
 					Block rBlock;
 					Player player = (Player) sender;
 					for (int y=1; y < (256-lsBlock.getY()); y++){
 						rBlock = lsBlock.getRelative(0, y, 0);
 						if (rBlock.getTypeId() == 0){
 							
-							player.teleport(new Location(player.getWorld(), rBlock.getX() + .5, rBlock.getY() + 1, rBlock.getZ() + .5));
+							player.teleport(new Location(lsWorld, rBlock.getX() + .5, rBlock.getY() + 1, rBlock.getZ() + .5));
 							//plugin.sendMessage(player, ChatColor.GRAY+"Teleporting to " + ChatColor.GREEN + rBlock.getX() + ChatColor.GRAY+"x" +ChatColor.GREEN + rBlock.getZ() + ChatColor.GRAY+ ".");
 
 							plugin.sendMessage(sender, GRAY+F("teleportingToCoordinates", GREEN + rBlock.getX() + GRAY, GREEN + rBlock.getY() + GRAY, GREEN + rBlock.getZ() + GRAY));
