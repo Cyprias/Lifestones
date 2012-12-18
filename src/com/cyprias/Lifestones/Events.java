@@ -42,7 +42,7 @@ public class Events implements Listener {
 		this.plugin = plugin;
 	}
 
-	public void unregisterEvents(){
+	public void unregisterEvents() {
 		BlockBreakEvent.getHandlerList().unregister(this);
 		BlockBurnEvent.getHandlerList().unregister(this);
 		BlockPistonExtendEvent.getHandlerList().unregister(this);
@@ -56,7 +56,7 @@ public class Events implements Listener {
 		PlayerRespawnEvent.getHandlerList().unregister(this);
 		VersionCheckerEvent.getHandlerList().unregister(this);
 	}
-	
+
 	/*
 	 * @EventHandler(priority = EventPriority.NORMAL) public void
 	 * onBlockRedstone(BlockRedstoneEvent event) {
@@ -65,15 +65,16 @@ public class Events implements Listener {
 	static public String L(String key) {
 		return Lifestones.L(key);
 	}
+
 	static public String F(String key, Object... args) {
 		return Lifestones.F(key, args);
 	}
-	
+
 	String GREEN = ChatColor.GREEN.toString();
 	String RESET = ChatColor.RESET.toString();
 	String GRAY = ChatColor.GRAY.toString();
 	String YELLOW = ChatColor.YELLOW.toString();
-	
+
 	public class attuneTask implements Runnable {
 		Player player;
 
@@ -85,13 +86,14 @@ public class Events implements Listener {
 			pX = player.getLocation().getBlockX();
 			pY = player.getLocation().getBlockY();
 			pZ = player.getLocation().getBlockZ();
-			//"Attuning to lifestone in " + Config.attuneDelay + " seconds, move to cancel."
-			plugin.sendMessage(player, GRAY+F("attuningToLifestone", GREEN+Config.attuneDelay+GRAY));
+			// "Attuning to lifestone in " + Config.attuneDelay +
+			// " seconds, move to cancel."
+			plugin.sendMessage(player, GRAY + F("attuningToLifestone", GREEN + Config.attuneDelay + GRAY));
 		}
 
 		public void run() {
 			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ) {
-				plugin.sendMessage(player, GRAY+L("movedTooFarAttunementFailed"));
+				plugin.sendMessage(player, GRAY + L("movedTooFarAttunementFailed"));
 				return;
 			}
 
@@ -105,14 +107,14 @@ public class Events implements Listener {
 			float pPitch = pLoc.getPitch();
 
 			String pName = player.getName();
-			
+
 			Attunements.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
-			plugin.sendMessage(player, GRAY+L("attunedToLifestone"));
+			plugin.sendMessage(player, GRAY + L("attunedToLifestone"));
 
 			Database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
 			if (Config.allowPerWorldAttunement == false)
-				Database.removeOtherWorldAttunments(pName, pWorld,  Config.preferAsyncDBCalls);
-			
+				Database.removeOtherWorldAttunments(pName, pWorld, Config.preferAsyncDBCalls);
+
 		}
 	}
 
@@ -136,30 +138,26 @@ public class Events implements Listener {
 						return;
 					}
 
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay*20L);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay * 20L);
 				}
 			}
 		}
 	}
 
-	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if (Attunements.defaultAttunement != null){
-		
-		String playerName = event.getPlayer().getName();
-		String worldName = plugin.getServer().getWorlds().get(0).getName();
-		boolean exists = (new File(worldName + "/players/" + playerName + ".dat")).exists();
-		if (exists == false){
-			Attunements.put(playerName, new Attunement(playerName, Attunements.defaultAttunement));
-			plugin.debug(playerName + " is new to the server, setting their default attunement location.");
-		}
-			
-		
+		if (Attunements.defaultAttunement != null) {
+
+			String playerName = event.getPlayer().getName();
+			String worldName = plugin.getServer().getWorlds().get(0).getName();
+			if ((new File(worldName + "/players/" + playerName + ".dat")).exists() == false) {
+				Attunements.put(playerName, new Attunement(playerName, Attunements.defaultAttunement));
+				plugin.debug(playerName + " is new to the server, setting their default attunement location.");
+			}
+
 		}
 	}
-	
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		plugin.debug(event.getEventName());
@@ -171,23 +169,22 @@ public class Events implements Listener {
 	}
 
 	/*
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockDamage(BlockDamageEvent event) {
-		if (event.isCancelled())
-			return;
-		plugin.debug(event.getEventName());
-	}*/
+	 * @EventHandler(priority = EventPriority.NORMAL) public void
+	 * onBlockDamage(BlockDamageEvent event) { if (event.isCancelled()) return;
+	 * plugin.debug(event.getEventName()); }
+	 */
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		if (event.isCancelled())
 			return;
-		//plugin.debug(event.getEventName());
-		
+		// plugin.debug(event.getEventName());
+
 		Block block = event.getBlock();
 		if (plugin.isProtected(block)) {
 			event.setCancelled(true);
-			plugin.debug("Blocking enty change block at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
+			plugin.debug("Blocking enty change block at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " "
+				+ event.getBlock().getY() + " " + event.getBlock().getZ());
 			return;
 		}
 	}
@@ -208,7 +205,8 @@ public class Events implements Listener {
 
 			if (plugin.isProtected(block)) {
 				event.setCancelled(true);
-				plugin.debug("Blocking piston extend at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
+				plugin.debug("Blocking piston extend at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " "
+					+ event.getBlock().getY() + " " + event.getBlock().getZ());
 
 				return;
 			}
@@ -229,7 +227,7 @@ public class Events implements Listener {
 
 			if (plugin.isProtected(block)) {
 				event.setCancelled(true);
-				plugin.debug("Blocking piston extend at " +block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
+				plugin.debug("Blocking piston extend at " + block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
 				break;
 			}
 		}
@@ -240,7 +238,7 @@ public class Events implements Listener {
 	public void onBlockBurn(BlockBurnEvent event) {
 		if (event.isCancelled())
 			return;
-		//plugin.debug(event.getEventName());
+		// plugin.debug(event.getEventName());
 		Block block = event.getBlock();
 		if (plugin.isProtected(block)) {
 			plugin.debug("Blocking block burn at " + block.getWorld().getName() + " " + block.getX() + " " + block.getY() + " " + block.getZ());
@@ -253,7 +251,7 @@ public class Events implements Listener {
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.isCancelled())
 			return;
-		//plugin.debug(event.getEventName());
+		// plugin.debug(event.getEventName());
 
 		for (Block block : event.blockList()) {
 			if (plugin.isProtected(block)) {
@@ -287,7 +285,8 @@ public class Events implements Listener {
 		Block moved = piston.getRelative(direction, 2);
 
 		if (plugin.isProtected(moved)) {
-			plugin.debug("Blocking piston retract at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY() + " " + event.getBlock().getZ());
+			plugin.debug("Blocking piston retract at " + event.getBlock().getWorld().getName() + " " + event.getBlock().getX() + " " + event.getBlock().getY()
+				+ " " + event.getBlock().getZ());
 			event.setCancelled(true);
 		}
 
@@ -303,7 +302,7 @@ public class Events implements Listener {
 		if (plugin.isLifestone(block) == true) {
 
 			if (!(player.hasPermission("lifestones.breaklifestone"))) {
-				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
+				plugin.sendMessage(player, GRAY + L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
 			}
@@ -316,7 +315,7 @@ public class Events implements Listener {
 			Database.removeLifestone(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ(), Config.preferAsyncDBCalls);
 			plugin.unregsterLifestone(event.getPlayer(), new lifestoneLoc(cBlock.getWorld().getName(), cBlock.getX(), cBlock.getY(), cBlock.getZ()));
 
-			plugin.sendMessage(player, GRAY+L("lifestoneUnregistered"));
+			plugin.sendMessage(player, GRAY + L("lifestoneUnregistered"));
 
 			event.setCancelled(true);// Stop the block from falling, our
 										// unregister function should air the
@@ -324,7 +323,7 @@ public class Events implements Listener {
 
 		} else if (plugin.isProtected(block) == true) {
 			if (!(player.hasPermission("lifestones.modifyprotectedblocks"))) {
-				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
+				plugin.sendMessage(player, GRAY + L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
 			}
@@ -344,14 +343,14 @@ public class Events implements Listener {
 		if (plugin.isLifestone(block) == true) {
 
 			if (!(player.hasPermission("lifestones.breaklifestone"))) {
-				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
+				plugin.sendMessage(player, GRAY + L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
 			}
 
 		} else if (plugin.isProtected(block) == true) {
 			if (!(player.hasPermission("lifestones.modifyprotectedblocks"))) {
-				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
+				plugin.sendMessage(player, GRAY + L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
 			}
@@ -371,31 +370,32 @@ public class Events implements Listener {
 			}
 		}
 	}
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		if (event.getEntity().getType() == EntityType.PLAYER) {
 			Player player = (Player) event.getEntity();
-			
-			if (plugin.playerProtections.containsKey(player.getName())){
+
+			if (plugin.playerProtections.containsKey(player.getName())) {
 				Double recalled = plugin.playerProtections.get(player.getName());
-				
-				if (recalled >= plugin.getUnixTime()){
+
+				if (recalled >= plugin.getUnixTime()) {
 					plugin.debug("Protecting recalled player " + player.getName());
 					event.setCancelled(true);
 					return;
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	public static HashMap<String, String> aliases = new HashMap<String, String>();
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String msg = event.getMessage();

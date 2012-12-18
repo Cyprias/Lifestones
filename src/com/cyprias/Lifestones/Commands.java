@@ -364,9 +364,9 @@ public class Commands implements CommandExecutor {
 								
 								Config.saveDefaultAttunement(attunement.loc);
 								Attunements.defaultAttunement = attunement.loc;
-								plugin.sendMessage(sender, "Server's default attunement set.");
+								plugin.sendMessage(sender, L("defaultAttunementSet"));
 							}else{
-								plugin.sendMessage(sender, "You need to set your own attunement first.");
+								plugin.sendMessage(sender, L("setYourAttunementFirst"));
 								
 							}
 							return true;
@@ -376,7 +376,7 @@ public class Commands implements CommandExecutor {
 					
 					
 					if (sender.hasPermission("lifestones.attunement.setdefault") && (sender instanceof Player))
-						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" setdefault"+ GRAY+" - " + "Set the server's default attunement location.", true, false);
+						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" setdefault"+ GRAY+" - " + L("setDefaultAttunementDesc"), true, false);
 					
 					return true;
 				}
@@ -408,7 +408,7 @@ public class Commands implements CommandExecutor {
 				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" randomtp" + GRAY+" - " + L("tpToRandomLoc"), true, false);
 			
 			if (sender.hasPermission("lifestones.attunement") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" attunement" + GRAY+" - " + "Attunement commands.", true, false);
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" attunement" + GRAY+" - " + L("attunementCommands"), true, false);
 			
 			return true;
 		}
