@@ -1,9 +1,11 @@
 package com.cyprias.Lifestones;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -352,9 +354,8 @@ public class Commands implements CommandExecutor {
 					
 					if (args.length > 1){
 						if (args[1].equalsIgnoreCase("setdefault")) {
-							if (!hasCommandPermission(sender, "lifestones.attunement.setdefault")) {
+							if (!hasCommandPermission(sender, "lifestones.attunement.setdefault"))
 								return true;
-							}
 							
 							if (Attunements.containsKey(sender.getName())) {
 								Attunement attunement = Attunements.get((Player) sender);
@@ -371,12 +372,64 @@ public class Commands implements CommandExecutor {
 							}
 							return true;
 							
+						}else if (args[1].equalsIgnoreCase("list")) {
+							if (!hasCommandPermission(sender, "lifestones.attunement.list"))
+								return true;
+							
+							HashMap<String, List<Attunement>> players = Attunements.players;
+							Iterator<List<Attunement>> vals = players.values().iterator();
+							List<Attunement> a;
+							while(vals.hasNext()){
+								a = vals.next();
+								String worlds = "";
+								for (int i=0; i< a.size(); i++){
+									worlds += a.get(i).loc.getWorld().getName() + "("+a.get(i).loc.getBlockX()+","+a.get(i).loc.getBlockZ()+") ";
+								}
+								
+								
+								plugin.sendMessage(sender, a.get(0).player + ": " + worlds, false);
+								
+							}
+							
+							return true;
+							
+						}else if (args[1].equalsIgnoreCase("tp")) {
+							if (!hasCommandPermission(sender, "lifestones.attunement.tp"))
+								return true;
+							
+							if (args.length > 2){
+								String who = args[2];
+								String world = plugin.getServer().getWorlds().get(0).getName();
+								if (args.length > 3 && plugin.getServer().getWorld(args[3]) != null){
+									world = plugin.getServer().getWorld(args[3]).getName();
+								}
+								
+								Attunement att = Attunements.get(who, world);
+								if (att != null){
+									((Player) sender).teleport(att.loc);
+									plugin.sendMessage(sender, GRAY+F("tpingToAttunement", GREEN+who+GRAY, GREEN+world+GRAY));
+								}else{
+									plugin.sendMessage(sender, GRAY+F("cannotFindAttunement", GREEN+who+GRAY));
+								}
+								
+								return true;
+							}
+							
+							plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" tp <who> [world]"+ GRAY+" - " + L("tpToAttunement"), true, false);
+							return true;
 						}
 					}
 					
 					
 					if (sender.hasPermission("lifestones.attunement.setdefault") && (sender instanceof Player))
 						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" setdefault"+ GRAY+" - " + L("setDefaultAttunementDesc"), true, false);
+					if (sender.hasPermission("lifestones.attunement.list") && (sender instanceof Player))
+						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" list"+ GRAY+" - " + L("listAllAttunements"), true, false);
+					if (sender.hasPermission("lifestones.attunement.tp") && (sender instanceof Player))
+						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" tp <who> [world]"+ GRAY+" - " + L("tpToAttunement"), true, false);
+					
+					
+					
 					
 					return true;
 				}

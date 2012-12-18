@@ -18,7 +18,7 @@ public class Attunements {
 	
 	
 	//private static HashMap<String, Attunement> players = new HashMap<String, Attunement>();
-	private static HashMap<String, List <Attunement>> players = new HashMap<String, List <Attunement>>();
+	public static HashMap<String, List <Attunement>> players = new HashMap<String, List <Attunement>>();
 
 	static Location defaultAttunement = null;
 	
@@ -41,6 +41,10 @@ public class Attunements {
 	
 	public static void onEnable(){
 		players.clear();
+	}
+	
+	public static Attunement get(String key, String worldName){
+		return get(key, server.getWorld(worldName));
 	}
 	
 	public static Attunement get(String key, World world){
