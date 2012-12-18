@@ -89,8 +89,10 @@ public class Lifestones extends JavaPlugin {
 			if (locale.get(key) == null){
 				info("Adding new locale " + key + " = " + resLocale.getString(key).replaceAll("(?i)&([a-k0-9])", "\u00A7$1"));
 				locale.set(key, resLocale.getString(key));
+				locale.save();
 			}
 		}
+		
 		
 		//Load locales into our hashmap. 
 		locales.clear();
