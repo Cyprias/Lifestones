@@ -18,24 +18,31 @@ import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class SQLite {
 	private static Database database;
-	private String pluginPath;
+	
 
 	private static String sqlDB;
 
 	public SQLite(Database database, File file) {
 		this.database = database;
-		this.pluginPath = file.getPath() + file.separator;
+		String pluginPath = file.getPath() + file.separator;
 
 		sqlDB = "jdbc:sqlite:" + pluginPath + "database.sqlite";
 	}
-
+	public static Connection getConnection() {
+		try {
+			return DriverManager.getConnection(sqlDB);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static boolean tableExists(String tableName) {
 		boolean exists = false;
 		String query;
-		
-		
+
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 			Statement stat = con.createStatement();
 			ResultSet result = stat.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "';");
 
@@ -62,7 +69,7 @@ public class SQLite {
 		//database.plugin.debug("Creating SQLite tables...");
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 			Statement stat = con.createStatement();
 
 			if (tableExists("Lifestones") == false) {
@@ -137,7 +144,7 @@ public class SQLite {
 	public static void loadAttunements() {
 		
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from `"+attunementsTbl+"`;");
 			while (rs.next()) {
@@ -155,7 +162,7 @@ public class SQLite {
 	public static void loadLifestones() {
 		
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from Lifestones;");
 			while (rs.next()) {
@@ -177,7 +184,7 @@ public class SQLite {
 		String table = "Lifestones";
 		
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 
 			Statement stat = con.createStatement();
 			ResultSet rs = stat.executeQuery("select * from `"+table+"` where `world` LIKE '"+bWorld+"' AND `x` LIKE " + bX + " AND `y` LIKE " + bY+ " AND `z` LIKE "+bZ);
@@ -214,7 +221,7 @@ public class SQLite {
 	
 	public static void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 
 			Statement stat = con.createStatement();
 			PreparedStatement prep;
@@ -264,7 +271,7 @@ public class SQLite {
 	public static void removeLifestone(String bWorld, int bX, int bY, int bZ) {
 		
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 
 			Statement stat = con.createStatement();
 	
@@ -288,7 +295,7 @@ public class SQLite {
 	public static void removeOtherWorldAttunments(String player, String world) {
 		
 		try {
-			Connection con = DriverManager.getConnection(sqlDB);
+			Connection con = getConnection();
 
 			Statement stat = con.createStatement();
 	

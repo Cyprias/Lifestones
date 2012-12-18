@@ -20,6 +20,11 @@ public class Attunements {
 	//private static HashMap<String, Attunement> players = new HashMap<String, Attunement>();
 	private static HashMap<String, List <Attunement>> players = new HashMap<String, List <Attunement>>();
 
+	static Location defaultAttunement = null;
+	
+	public static void setDefaultAttunement(String world, double x, double y, double z,  float yaw, float pitch){
+		defaultAttunement = new Location(server.getWorld(world), x, y, z, yaw, pitch);
+	}
 	
 	static public class Attunement{
 		String player;
@@ -27,6 +32,10 @@ public class Attunements {
 		public Attunement(String player, String world, double x, double y, double z,  float yaw, float pitch){
 			this.player = player;
 			this.loc = new Location(server.getWorld(world), x, y, z, yaw, pitch);
+		}
+		public Attunement(String player, Location loc){
+			this.player = player;
+			this.loc = loc;
 		}
 	}
 	

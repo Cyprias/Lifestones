@@ -26,27 +26,17 @@ public class MySQL {
 	//	try {Class.forName("com.mysql.jdbc.Driver");} catch (ClassNotFoundException e) {e.printStackTrace();}
 	}
 
-	public static Connection getSQLConnection() {
+	public static Connection getConnection() {
 		try {
-			Connection con;
-			if (Config.sqlURL.contains("mysql")) {
-				con = DriverManager.getConnection(Config.sqlURL, Config.sqlUsername, Config.sqlPassword);
-			} else {
-				con = DriverManager.getConnection(Config.sqlURL);
-			}
-
-			return con;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			return DriverManager.getConnection(Config.sqlURL, Config.sqlUsername, Config.sqlPassword);
+		} catch (SQLException e) {e.printStackTrace();}
 		return null;
 	}
 	
 	public static boolean tableExists(String tableName) {
 		boolean exists = false;
 		try {
-			Connection con = getSQLConnection();
+			Connection con = getConnection();
 
 			String query;
 
@@ -74,7 +64,7 @@ public class MySQL {
 
 	public static void createTables() {
 		String query;
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 
 		try {
@@ -109,7 +99,7 @@ public class MySQL {
 	public static void saveLifestone(String bWorld, int bX, int bY, int bZ) {//Block block
 		String table = Config.sqlPrefix + "Lifestones";
 
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		int success = 0;
 
@@ -168,7 +158,7 @@ public class MySQL {
 	public static void loadLifestones() {
 		String table = Config.sqlPrefix + "Lifestones";
 
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		int success = 0;
 
@@ -191,7 +181,7 @@ public class MySQL {
 	public static void removeLifestone(String bWorld, int bX, int bY, int bZ) {
 		String table = Config.sqlPrefix + "Lifestones";
 		int success = 0;
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		String query = "DELETE from `"+table+"` where `world` LIKE ? AND `x` LIKE ? AND `y` LIKE ? AND `z` LIKE ?";
 		try {
@@ -216,7 +206,7 @@ public class MySQL {
 	
 	public static void removeOtherWorldAttunments(String player, String world) {
 		String table = Config.sqlPrefix + "Attunements_v2";
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		String query = "DELETE from `"+table+"` where `player` LIKE ? AND `world` NOT LIKE ?";
 		try {
@@ -240,7 +230,7 @@ public class MySQL {
 	public static void saveAttunment(String player, String bWorld, double x, double y, double z,  float yaw, float pitch) {
 		String table = Config.sqlPrefix + "Attunements_v2";
 
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		int success = 0;
 
@@ -301,7 +291,7 @@ public class MySQL {
 	public static void loadAttunements() {
 		String table = Config.sqlPrefix + "Attunements_v2";
 
-		Connection con = getSQLConnection();
+		Connection con = getConnection();
 		PreparedStatement statement = null;
 		int success = 0;
 

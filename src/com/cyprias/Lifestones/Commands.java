@@ -345,34 +345,70 @@ public class Commands implements CommandExecutor {
 					}
 						
 					
+				} else if (args[0].equalsIgnoreCase("attunement")) {
+					if (!hasCommandPermission(sender, "lifestones.attunement")) {
+						return true;
+					}
 					
+					if (args.length > 1){
+						if (args[1].equalsIgnoreCase("setdefault")) {
+							if (!hasCommandPermission(sender, "lifestones.attunement.setdefault")) {
+								return true;
+							}
+							
+							if (Attunements.containsKey(sender.getName())) {
+								Attunement attunement = Attunements.get((Player) sender);
+								//event.setRespawnLocation(attunement.loc);
+								
+								//attunement.loc.getWorld().getName()
+								
+								Config.saveDefaultAttunement(attunement.loc);
+								Attunements.defaultAttunement = attunement.loc;
+								plugin.sendMessage(sender, "Server's default attunement set.");
+							}else{
+								plugin.sendMessage(sender, "You need to set your own attunement first.");
+								
+							}
+							return true;
+							
+						}
+					}
+					
+					
+					if (sender.hasPermission("lifestones.attunement.setdefault") && (sender instanceof Player))
+						plugin.sendMessage(sender, GREEN+"/"+commandLabel+" "+args[0] +" setdefault"+ GRAY+" - " + "Set the server's default attunement location.", true, false);
+					
+					return true;
 				}
 			}
 			
 			plugin.sendMessage(sender, F("nameAndVersion", GREEN+plugin.pluginName +GRAY, GREEN+plugin.getDescription().getVersion()+GRAY));
 
-			if (plugin.hasPermission(sender, "lifestones.recall") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone" + GRAY+" - " + L("lifestoneDesc"), true, false);
+			if (sender.hasPermission("lifestones.recall") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+"" + GRAY+" - " + L("lifestoneDesc"), true, false);
 			
 			
 			
-			if (plugin.hasPermission(sender, "lifestones.create") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone create" + GRAY+" - " + L("createALifestone"), true, false);
+			if (sender.hasPermission("lifestones.create") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" create" + GRAY+" - " + L("createALifestone"), true, false);
 			
-			if (plugin.hasPermission(sender, "lifestones.list") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone list" + GRAY+" - " + L("lifeAllLifestones"), true, false);
+			if (sender.hasPermission("lifestones.list") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" list" + GRAY+" - " + L("lifeAllLifestones"), true, false);
 			
-			if (plugin.hasPermission(sender, "lifestones.tp") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone tp [#]" + GRAY+" - " + L("tpToLifestone"), true, false);
+			if (sender.hasPermission("lifestones.tp") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" tp [#]" + GRAY+" - " + L("tpToLifestone"), true, false);
 			
-			if (plugin.hasPermission(sender, "lifestones.near") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone near" + GRAY+" - " + L("showNearestLifestone"), true, false);
+			if (sender.hasPermission("lifestones.near") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" near" + GRAY+" - " + L("showNearestLifestone"), true, false);
 			
-			if (plugin.hasPermission(sender, "lifestones.reload") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone reload" + GRAY+" - " + L("reloadThePlugin"), true, false);
+			if (sender.hasPermission("lifestones.reload") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" reload" + GRAY+" - " + L("reloadThePlugin"), true, false);
 			
-			if (plugin.hasPermission(sender, "lifestones.randomtp") && (sender instanceof Player))
-				plugin.sendMessage(sender, GREEN+"/lifestone randomtp" + GRAY+" - " + L("tpToRandomLoc"), true, false);
+			if (sender.hasPermission("lifestones.randomtp") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" randomtp" + GRAY+" - " + L("tpToRandomLoc"), true, false);
+			
+			if (sender.hasPermission("lifestones.attunement") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" attunement" + GRAY+" - " + "Attunement commands.", true, false);
 			
 			return true;
 		}
@@ -383,7 +419,7 @@ public class Commands implements CommandExecutor {
 
 	
 	public boolean hasCommandPermission(CommandSender player, String permission) {
-		if (plugin.hasPermission(player, permission)) {
+		if (player.hasPermission(permission)) {
 			return true;
 		}
 		plugin.sendMessage(player, ChatColor.GRAY +F("noPermission", YELLOW+permission+GRAY));

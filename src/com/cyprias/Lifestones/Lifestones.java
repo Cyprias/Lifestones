@@ -113,44 +113,18 @@ public class Lifestones extends JavaPlugin {
 	
 
 	public void info(String msg) {
-		getServer().getConsoleSender().sendMessage(chatPrefix + msg);
+		if (getServer().getConsoleSender() != null){
+			getServer().getConsoleSender().sendMessage(chatPrefix + msg);
+		}else{
+			log.info(chatPrefix + msg);
+		}
 	}
 
 	public void debug(String msg) {
-		if (Config.debugMessages == true) {
-
+		if (Config.debugMessages == true)
 			info(ChatColor.DARK_GRAY + "[Debug] " + ChatColor.WHITE + msg);
-		}
 	}
-
-	//
-
-	public boolean hasPermission(CommandSender sender, String node) {
-		if (!(sender instanceof Player)) {
-			return true;
-		}
-		Player player = (Player) sender;
-
-		if (player.isPermissionSet(node)) // in case admin purposely set the
-											// node to false.
-			return player.hasPermission(node);
-
-		if (player.isPermissionSet(pluginName.toLowerCase() + ".*"))
-			return player.hasPermission(pluginName.toLowerCase() + ".*");
-
-		String[] temp = node.split("\\.");
-		String wildNode = temp[0];
-		for (int i = 1; i < (temp.length); i++) {
-			wildNode = wildNode + "." + temp[i];
-
-			if (player.isPermissionSet(wildNode + ".*"))
-				// plugin.info("wildNode1 " + wildNode+".*");
-				return player.hasPermission(wildNode + ".*");
-		}
-
-		return player.hasPermission(node);
-	}
-
+	
 	public void sendMessage(CommandSender sender, String message, Boolean showConsole, Boolean sendPrefix) {
 		if (sender instanceof Player && showConsole == true) {
 			info("§e" + sender.getName() + "->§f" + message);
@@ -170,6 +144,8 @@ public class Lifestones extends JavaPlugin {
 		sendMessage(sender, message, true);
 	}
 
+	
+	
 	/**/
 	static public class lifestoneLoc {
 		String world;
@@ -183,6 +159,7 @@ public class Lifestones extends JavaPlugin {
 		}
 	}
 
+	
 	public static double getUnixTime() {
 		return (System.currentTimeMillis() / 1000D);
 	}

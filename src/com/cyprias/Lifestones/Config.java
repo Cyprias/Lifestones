@@ -4,6 +4,7 @@ package com.cyprias.Lifestones;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -67,6 +68,31 @@ public class Config {
 		allowPerWorldAttunement = config.getBoolean("allowPerWorldAttunement");
 		
 		loadStrucutre();
+		loadDefaultAttunement();
+	}
+	
+	public static void saveDefaultAttunement(Location loc){
+		//String world, double x, double y, double z,  float yaw, float pitch
+		config.set("defaultAttunement.world", loc.getWorld().getName());
+		config.set("defaultAttunement.x", loc.getX());
+		config.set("defaultAttunement.y", loc.getY());
+		config.set("defaultAttunement.z", loc.getZ());
+		config.set("defaultAttunement.yaw", loc.getYaw());
+		config.set("defaultAttunement.pitch", loc.getPitch());
+	}
+	
+	public static void loadDefaultAttunement(){
+		plugin.debug("loadDefaultAttunement 1");
+		if (config.contains("defaultAttunement")){
+			plugin.debug("loadDefaultAttunement 2");
+			String world = config.getString("defaultAttunement.world");
+			double x = config.getDouble("defaultAttunement.x");
+			double y = config.getDouble("defaultAttunement.y");
+			double z = config.getDouble("defaultAttunement.z");
+			double yaw = config.getDouble("defaultAttunement.yaw");
+			double pitch = config.getDouble("defaultAttunement.pitch");
+			Attunements.setDefaultAttunement(world, x, y, z, (float) yaw,(float) pitch);
+		}
 	}
 	
 	static public class lifestoneStructure {

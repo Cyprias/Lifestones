@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -25,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.PistonBaseMaterial;
@@ -140,6 +142,24 @@ public class Events implements Listener {
 		}
 	}
 
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		if (Attunements.defaultAttunement != null){
+		
+		String playerName = event.getPlayer().getName();
+		String worldName = plugin.getServer().getWorlds().get(0).getName();
+		boolean exists = (new File(worldName + "/players/" + playerName + ".dat")).exists();
+		if (exists == false){
+			Attunements.put(playerName, new Attunement(playerName, Attunements.defaultAttunement));
+			plugin.debug(playerName + " is new to the server, setting their default attunement location.");
+		}
+			
+		
+		}
+	}
+	
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		plugin.debug(event.getEventName());
@@ -282,7 +302,7 @@ public class Events implements Listener {
 		Block block = event.getBlock();
 		if (plugin.isLifestone(block) == true) {
 
-			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))) {
+			if (!(player.hasPermission("lifestones.breaklifestone"))) {
 				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
@@ -303,7 +323,7 @@ public class Events implements Listener {
 										// block.
 
 		} else if (plugin.isProtected(block) == true) {
-			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))) {
+			if (!(player.hasPermission("lifestones.modifyprotectedblocks"))) {
 				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
@@ -323,14 +343,14 @@ public class Events implements Listener {
 		Block block = event.getBlock();
 		if (plugin.isLifestone(block) == true) {
 
-			if (!(plugin.hasPermission(player, "lifestones.breaklifestone"))) {
+			if (!(player.hasPermission("lifestones.breaklifestone"))) {
 				plugin.sendMessage(player, GRAY+L("cannotModifyLifestone"));
 				event.setCancelled(true);
 				return;
 			}
 
 		} else if (plugin.isProtected(block) == true) {
-			if (!(plugin.hasPermission(player, "lifestones.modifyprotectedblocks"))) {
+			if (!(player.hasPermission("lifestones.modifyprotectedblocks"))) {
 				plugin.sendMessage(player, GRAY+L("blockProtectedByLifestone"));
 				event.setCancelled(true);
 				return;
