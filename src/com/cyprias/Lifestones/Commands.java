@@ -222,6 +222,8 @@ public class Commands implements CommandExecutor {
 					}
 					if (lifestones.size() > 0){
 					
+
+						
 						compareLifestones comparator = new compareLifestones();
 						Collections.sort(lifestones, comparator);
 					
@@ -376,23 +378,30 @@ public class Commands implements CommandExecutor {
 							if (!hasCommandPermission(sender, "lifestones.attunement.list"))
 								return true;
 							
-							HashMap<String, List<Attunement>> players = Attunements.players;
-							Iterator<List<Attunement>> vals = players.values().iterator();
-							List<Attunement> a;
+							Iterator<List<Attunement>> vals = Attunements.players.values().iterator();
+							
+							List<List<Attunement>> names = new ArrayList<List<Attunement>>();
 							while(vals.hasNext()){
-								a = vals.next();
-								String worlds = "";
-								for (int i=0; i< a.size(); i++){
-									worlds += a.get(i).loc.getWorld().getName() + "("+a.get(i).loc.getBlockX()+","+a.get(i).loc.getBlockZ()+") ";
-								}
-								
-								
-								plugin.sendMessage(sender, a.get(0).player + ": " + worlds, false);
-								
+								names.add(vals.next());
 							}
 							
-							return true;
+							compareAttunementNames comparator = new compareAttunementNames();
+							Collections.sort(names, comparator);
 							
+							List<Attunement> aList;
+							Attunement att;
+							String worlds;
+							for (int i=0; i< names.size(); i++){
+								aList = names.get(i);
+								worlds = "";
+								for (int w=0; w< aList.size(); w++){
+									att =  aList.get(w);
+									worlds += att.loc.getWorld().getName() + "("+att.loc.getBlockX()+","+att.loc.getBlockZ()+") ";
+								}
+								plugin.sendMessage(sender,aList.get(0).player + ": " + worlds, false);
+							}
+
+							return true;
 						}else if (args[1].equalsIgnoreCase("tp")) {
 							if (!hasCommandPermission(sender, "lifestones.attunement.tp"))
 								return true;
@@ -504,7 +513,14 @@ public class Commands implements CommandExecutor {
 		}
 
 	}
-	
+	public class compareAttunementNames implements Comparator<List<Attunement>> {
+
+		@Override
+		public int compare(List<Attunement> o1, List<Attunement> o2) {
+			return o1.get(0).player.toLowerCase().compareTo(o2.get(0).player.toLowerCase());
+		}
+
+	}
 
 	
 }
