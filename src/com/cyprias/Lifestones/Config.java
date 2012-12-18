@@ -79,6 +79,7 @@ public class Config {
 		config.set("defaultAttunement.z", loc.getZ());
 		config.set("defaultAttunement.yaw", loc.getYaw());
 		config.set("defaultAttunement.pitch", loc.getPitch());
+		plugin.saveConfig();
 	}
 	
 	public static void loadDefaultAttunement(){
