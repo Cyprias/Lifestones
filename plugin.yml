@@ -1,6 +1,6 @@
 name: Lifestones
 main: com.cyprias.Lifestones.Lifestones
-version: 1.1.1
+version: 1.2.0
 
 commands:
   lifestones:
@@ -41,3 +41,5 @@ permissions:
     default: false
     children:
       lifestones.attunement.setdefault: true
+      lifestones.attunement.list: true
+      lifestones.attunement.tp: true
