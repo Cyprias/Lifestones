@@ -83,9 +83,7 @@ public class Config {
 	}
 	
 	public static void loadDefaultAttunement(){
-		plugin.debug("loadDefaultAttunement 1");
 		if (config.contains("defaultAttunement")){
-			plugin.debug("loadDefaultAttunement 2");
 			String world = config.getString("defaultAttunement.world");
 			double x = config.getDouble("defaultAttunement.x");
 			double y = config.getDouble("defaultAttunement.y");
