@@ -31,9 +31,10 @@ public class Lifestones extends JavaPlugin {
 	public void onLoad() {
 		pluginName = getDescription().getName();
 
+		new Attunements(getServer());
 		new Config(this);
 		Config.reloadOurConfig();
-		new Attunements(getServer());
+		
 		new Database(this);
 		Database.createTables();
 

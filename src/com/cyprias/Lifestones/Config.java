@@ -88,9 +88,9 @@ public class Config {
 			double x = config.getDouble("defaultAttunement.x");
 			double y = config.getDouble("defaultAttunement.y");
 			double z = config.getDouble("defaultAttunement.z");
-			double yaw = config.getDouble("defaultAttunement.yaw");
-			double pitch = config.getDouble("defaultAttunement.pitch");
-			Attunements.setDefaultAttunement(world, x, y, z, (float) yaw,(float) pitch);
+			float yaw = (float) config.getDouble("defaultAttunement.yaw");
+			float pitch = (float) config.getDouble("defaultAttunement.pitch");
+			Attunements.setDefaultAttunement(world, x, y, z, yaw,pitch);
 		}
 	}
 	
