@@ -3,8 +3,6 @@ package com.cyprias.Lifestones;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.TrigMath;
-import org.bukkit.craftbukkit.util.LongHash;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
@@ -13,11 +11,7 @@ public class MathUtil {
 	
 	public static final float DEGTORAD = 0.017453293F;
 	public static final float RADTODEG = 57.29577951F;
-
-	public static float getLookAtYaw(net.minecraft.server.Entity loc, net.minecraft.server.Entity lookat) {
-		return getLookAtYaw(loc.getBukkitEntity(), lookat.getBukkitEntity());
-	}
-
+	
 	public static float getLookAtYaw(Entity loc, Entity lookat) {
 		return getLookAtYaw(loc.getLocation(), lookat.getLocation());
 	}

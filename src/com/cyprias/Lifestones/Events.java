@@ -384,13 +384,23 @@ public class Events implements Listener {
 
 				if (recalled >= plugin.getUnixTime()) {
 					plugin.debug("Protecting recalled player " + player.getName());
+					plugin.sendMessage(player, GRAY + L("playerProtectedByLifestone"));
+					
 					event.setCancelled(true);
 					return;
 				}
 
 			}
 
+		}else if (event.getDamager().getType() == EntityType.PLAYER){
+			Player player = (Player) event.getDamager();
+			if (plugin.playerProtections.containsKey(player.getName())) 
+				plugin.playerProtections.remove(player.getName());
+			
 		}
+		
+		
+		
 
 	}
 
