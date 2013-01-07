@@ -16,8 +16,8 @@ import org.w3c.dom.NodeList;
 public class VersionChecker {
 	public static void retreiveVersionInfo(JavaPlugin plugin, String curseRSS, Object... args) {
 		getVersionInfoTask task = new getVersionInfoTask(plugin.getServer().getPluginManager(), plugin.getDescription().getName(), curseRSS);
-		int taskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, task, 0L);
 		task.setArgs(args);
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
 	}
 
 	public static int compareVersions(String a, String b){
