@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class Attunements {
 	static private Server server;
 	public Attunements(Server server){
-		this.server = server;
+		Attunements.server = server;
 	}
 	
 	

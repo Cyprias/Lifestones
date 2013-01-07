@@ -1,10 +1,9 @@
 package com.cyprias.Lifestones;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Config.lifestoneStructure;
-import com.cyprias.Lifestones.Events.attuneTask;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
 
 public class Commands implements CommandExecutor {
@@ -70,7 +68,7 @@ public class Commands implements CommandExecutor {
 			plugin.sendMessage(player, GRAY+L("recalledToLifestone"));
 			
 			
-			plugin.playerProtections.put(player.getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
+			plugin.playerProtections.put(player.getName(), Lifestones.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 			//protectPlayerAfterRecallDuration
 		}
 	}
@@ -166,7 +164,12 @@ public class Commands implements CommandExecutor {
 					}
 					
 					plugin.regsterLifestone(new lifestoneLoc(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ()));
-					Database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
+					try {
+						Database.saveLifestone(pBlock.getWorld().getName(), pBlock.getX(), pBlock.getY(), pBlock.getZ(), Config.preferAsyncDBCalls);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
 					plugin.sendMessage(sender, GRAY+L("lifestoneCreated"));
 					
@@ -265,7 +268,7 @@ public class Commands implements CommandExecutor {
 					
 					int page = 1;
 					if (args.length > 1) {// && args[1].equalsIgnoreCase("compact"))
-						if (plugin.isInt(args[1])) {
+						if (Lifestones.isInt(args[1])) {
 							page = Math.abs(Integer.parseInt(args[1]));
 						} else {
 							plugin.sendMessage(sender, GRAY + F("invalidPageNumber", args[1]));
@@ -307,7 +310,7 @@ public class Commands implements CommandExecutor {
 					}
 					int lsID;
 					if (args.length > 1) {// && args[1].equalsIgnoreCase("compact"))
-						if (plugin.isInt(args[1])) {
+						if (Lifestones.isInt(args[1])) {
 							lsID = Math.abs(Integer.parseInt(args[1]));
 						} else {
 							plugin.sendMessage(sender, GRAY+F("invalidID",args[1]));
@@ -444,7 +447,7 @@ public class Commands implements CommandExecutor {
 				}
 			}
 			
-			plugin.sendMessage(sender, F("nameAndVersion", GREEN+plugin.pluginName +GRAY, GREEN+plugin.getDescription().getVersion()+GRAY));
+			plugin.sendMessage(sender, F("nameAndVersion", GREEN+Lifestones.pluginName +GRAY, GREEN+plugin.getDescription().getVersion()+GRAY));
 
 			if (sender.hasPermission("lifestones.recall") && (sender instanceof Player))
 				plugin.sendMessage(sender, GREEN+"/"+commandLabel+"" + GRAY+" - " + L("lifestoneDesc"), true, false);

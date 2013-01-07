@@ -1,14 +1,15 @@
 package com.cyprias.Lifestones;
 
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.InvalidConfigurationException;
 
 
 public class Config {
@@ -21,21 +22,21 @@ public class Config {
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 
 	public Config(Lifestones plugin) {
-		this.plugin = plugin;
+		Config.plugin = plugin;
 		
 		config = plugin.getConfig().getRoot();
 		config.options().copyDefaults(true);
 		plugin.saveConfig();
 	}
-	public static void onEnable(){
+	public static void onEnable() throws FileNotFoundException, IOException, InvalidConfigurationException{
 		reloadOurConfig();
 	}
-	public static void reloadOurConfig(){
+	public static void reloadOurConfig() throws FileNotFoundException, IOException, InvalidConfigurationException{
 		plugin.reloadConfig();
 		config = plugin.getConfig().getRoot();
 		loadConfigOpts();
 	}
-	private static void loadConfigOpts(){
+	private static void loadConfigOpts() throws FileNotFoundException, IOException, InvalidConfigurationException{
 		preferAsyncDBCalls = config.getBoolean("preferAsyncDBCalls");
 		setUnregisteredLifestonesToAir = config.getBoolean("setUnregisteredLifestonesToAir");
 		protectLifestoneRadius = config.getInt("protectLifestoneRadius");
@@ -111,12 +112,11 @@ public class Config {
 	static List<lifestoneStructure> structureBlocks = new ArrayList<lifestoneStructure>();
 	
 	
-	private static void loadStrucutre(){
+	private static void loadStrucutre() throws FileNotFoundException, IOException, InvalidConfigurationException{
 		YML yml = new YML(plugin.getResource("structure.yml"),plugin.getDataFolder(), "structure.yml");
 
 		ConfigurationSection dStructure = yml.getConfigurationSection("structure");
-		
-		Block block;
+
 		structureBlocks.clear();
 		for (String rCoords : dStructure.getKeys(false)) {
 			String[] coords = rCoords.split(",");

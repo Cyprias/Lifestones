@@ -1,9 +1,8 @@
 package com.cyprias.Lifestones;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -111,14 +110,22 @@ public class Events implements Listener {
 			Attunements.put(pName, new Attunement(pName, pWorld, pX, pY, pZ, pYaw, pPitch));
 			plugin.sendMessage(player, GRAY + L("attunedToLifestone"));
 
-			Database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+			try {
+				Database.saveAttunment(pName, pWorld, pX, pY, pZ, pYaw, pPitch, Config.preferAsyncDBCalls);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (Config.allowPerWorldAttunement == false)
-				Database.removeOtherWorldAttunments(pName, pWorld, Config.preferAsyncDBCalls);
+				try {
+					Database.removeOtherWorldAttunments(pName, pWorld, Config.preferAsyncDBCalls);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 		}
 	}
-
-	private Logger log = Logger.getLogger("Minecraft");
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -128,7 +135,7 @@ public class Events implements Listener {
 		Action action = event.getAction();
 		// log.info("action " + action);
 
-		if (action.equals(action.RIGHT_CLICK_BLOCK)) {
+		if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
 			Block cBlock = event.getClickedBlock();
 			// log.info("cBlock: " + cBlock.getType());
 			if (cBlock.getTypeId() == 77 || cBlock.getTypeId() == 143) {// BUTTON
@@ -164,7 +171,7 @@ public class Events implements Listener {
 		if (Attunements.containsKey(event.getPlayer().getName())) {
 			Attunement attunement = Attunements.get(event.getPlayer());
 			event.setRespawnLocation(attunement.loc);
-			plugin.playerProtections.put(event.getPlayer().getName(), plugin.getUnixTime() + Config.protectPlayerAfterRecallDuration);
+			plugin.playerProtections.put(event.getPlayer().getName(), Lifestones.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}
 	}
 
@@ -293,7 +300,7 @@ public class Events implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockBreak(BlockBreakEvent event) {
+	public void onBlockBreak(BlockBreakEvent event) throws SQLException {
 		if (event.isCancelled())
 			return;
 		Player player = event.getPlayer();
@@ -382,7 +389,7 @@ public class Events implements Listener {
 			if (plugin.playerProtections.containsKey(player.getName())) {
 				Double recalled = plugin.playerProtections.get(player.getName());
 
-				if (recalled >= plugin.getUnixTime()) {
+				if (recalled >= Lifestones.getUnixTime()) {
 					plugin.debug("Protecting recalled player " + player.getName());
 					plugin.sendMessage(player, GRAY + L("playerProtectedByLifestone"));
 					

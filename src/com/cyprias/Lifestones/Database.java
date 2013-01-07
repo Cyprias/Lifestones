@@ -1,16 +1,9 @@
 package com.cyprias.Lifestones;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Databases.MySQL;
 import com.cyprias.Lifestones.Databases.SQLite;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
@@ -21,15 +14,15 @@ public class Database {
 	//private MySQL mysql;
 	static BukkitScheduler scheduler;
 	public Database(Lifestones plugin) {
-		this.plugin = plugin;
-		this.scheduler = plugin.getServer().getScheduler();
+		Database.plugin = plugin;
+		Database.scheduler = plugin.getServer().getScheduler();
 
 		new SQLite(this, plugin.getDataFolder());
 		new MySQL(this);
 	}
 	
 
-	public static void createTables(){
+	public static void createTables() throws SQLException, ClassNotFoundException{
 		if (Config.mysqlEnabled == true){
 			MySQL.createTables();
 		}else{
@@ -37,11 +30,19 @@ public class Database {
 		}
 	}
 	
-	public void createTables(Boolean async) {
+	public void createTables(Boolean async) throws SQLException, ClassNotFoundException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					createTables();
+					try {
+						createTables();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -50,16 +51,21 @@ public class Database {
 		}
 	}
 	
-	public static void loadDatabases(){
+	public static void loadDatabases() throws SQLException{
 		loadLifestones();
 		loadAttunments();
 	}
 		
-	public static void loadDatabases(Boolean async) {
+	public static void loadDatabases(Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					loadDatabases();
+					try {
+						loadDatabases();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -68,7 +74,7 @@ public class Database {
 		}
 	}
 	
-	public static void saveLifestone(String world, int X, int Y, int Z){
+	public static void saveLifestone(String world, int X, int Y, int Z) throws SQLException{
 		if (Config.mysqlEnabled == true){
 			MySQL.saveLifestone(world, X, Y, Z);
 		}else{
@@ -76,11 +82,16 @@ public class Database {
 		}
 
 	}
-	public static void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
+	public static void saveLifestone(final String world, final int X, final int Y, final int Z, Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					saveLifestone(world, X, Y, Z);
+					try {
+						saveLifestone(world, X, Y, Z);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -89,7 +100,7 @@ public class Database {
 		}
 	}
 	
-	public static void removeLifestone(String world, int X, int Y, int Z){
+	public static void removeLifestone(String world, int X, int Y, int Z) throws SQLException{
 		if (Config.mysqlEnabled == true){
 			MySQL.removeLifestone(world, X, Y, Z);	
 		}else{
@@ -98,11 +109,16 @@ public class Database {
 
 	}
 	
-	public static void removeLifestone(final String world, final int X, final int Y, final int Z, Boolean async) {
+	public static void removeLifestone(final String world, final int X, final int Y, final int Z, Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					removeLifestone(world, X, Y, Z);
+					try {
+						removeLifestone(world, X, Y, Z);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -111,7 +127,7 @@ public class Database {
 		}
 	}
 	
-	public static void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch){
+	public static void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch) throws SQLException{
 		if (Config.mysqlEnabled == true){
 			MySQL.saveAttunment(player, world, x, y, z,yaw,pitch);
 		}else{
@@ -120,11 +136,16 @@ public class Database {
 
 	}
 	
-	public static void saveAttunment(final String player, final String world, final double x, final double y, final double z, final float yaw, final float pitch, Boolean async) {
+	public static void saveAttunment(final String player, final String world, final double x, final double y, final double z, final float yaw, final float pitch, Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					saveAttunment(player, world, x, y, z,yaw,pitch);
+					try {
+						saveAttunment(player, world, x, y, z,yaw,pitch);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -133,7 +154,7 @@ public class Database {
 		}
 	}
 	
-	public static void removeOtherWorldAttunments(String player, String world){
+	public static void removeOtherWorldAttunments(String player, String world) throws SQLException{
 		if (Config.mysqlEnabled == true){
 			MySQL.removeOtherWorldAttunments(player, world);	
 		}else{
@@ -141,11 +162,16 @@ public class Database {
 		}
 
 	}
-	public static void removeOtherWorldAttunments(final String player, final String world, Boolean async) {
+	public static void removeOtherWorldAttunments(final String player, final String world, Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					removeOtherWorldAttunments(player, world);
+					try {
+						removeOtherWorldAttunments(player, world);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -154,7 +180,7 @@ public class Database {
 		}
 	}
 	
-	public static void loadAttunments() {
+	public static void loadAttunments() throws SQLException {
 		if (Config.mysqlEnabled == true){
 			MySQL.loadAttunements();
 		}else{
@@ -162,11 +188,16 @@ public class Database {
 		}
 	}
 	
-	public void loadAttunments(Boolean async) {
+	public void loadAttunments(Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					loadAttunments();
+					try {
+						loadAttunments();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -175,7 +206,7 @@ public class Database {
 		}
 	}
 	
-	public static void loadLifestones() {
+	public static void loadLifestones() throws SQLException {
 		if (Config.mysqlEnabled == true){
 			MySQL.loadLifestones();
 		}else{
@@ -183,11 +214,16 @@ public class Database {
 		}
 	}
 	
-	public void loadLifestones(Boolean async) {
+	public void loadLifestones(Boolean async) throws SQLException {
 		if (async == true){
-			scheduler.scheduleAsyncDelayedTask(plugin, new Runnable() {
+			scheduler.runTaskAsynchronously(plugin, new Runnable() {
 				public void run() {
-					loadLifestones();
+					try {
+						loadLifestones();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			

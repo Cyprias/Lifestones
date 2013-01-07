@@ -1,7 +1,8 @@
 package com.cyprias.Lifestones;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,10 +35,23 @@ public class Lifestones extends JavaPlugin {
 
 		new Attunements(getServer());
 		new Config(this);
-		Config.reloadOurConfig();
+		try {
+			Config.reloadOurConfig();
+		} catch (FileNotFoundException e1) {e1.printStackTrace();
+		} catch (IOException e1) {e1.printStackTrace();
+		} catch (InvalidConfigurationException e1) {e1.printStackTrace();
+		}
 		
 		new Database(this);
-		Database.createTables();
+		try {
+			Database.createTables();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		this.commands = new Commands(this);
 		this.events = new Events(this);
@@ -56,17 +71,35 @@ public class Lifestones extends JavaPlugin {
 
 	public static HashMap<String, String> locales = new HashMap<String, String>();
 	public void onEnable() {
-		Config.onEnable();
+		try {
+			Config.onEnable();
+		} catch (FileNotFoundException e1) {e1.printStackTrace();
+		} catch (IOException e1) {e1.printStackTrace();
+		} catch (InvalidConfigurationException e1) {e1.printStackTrace();
+		}
 		
-		loadLocales();
-		loadAliases();
+		try {
+			loadLocales();
+		} catch (FileNotFoundException e) {e.printStackTrace();
+		} catch (IOException e) {e.printStackTrace();
+		} catch (InvalidConfigurationException e) {e.printStackTrace();
+		}
+		try {
+			loadAliases();
+		} catch (FileNotFoundException e) {e.printStackTrace();
+		} catch (IOException e) {e.printStackTrace();
+		} catch (InvalidConfigurationException e) {e.printStackTrace();
+		}
 		
 		getCommand("lifestone").setExecutor(this.commands);
 		getCommand("lifestones").setExecutor(this.commands);
 		getServer().getPluginManager().registerEvents(this.events, this);
 
 		Attunements.onEnable();
-		Database.loadDatabases(Config.preferAsyncDBCalls);
+		try {
+			Database.loadDatabases(Config.preferAsyncDBCalls);
+		} catch (SQLException e) {e.printStackTrace();
+		}
 
 		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
@@ -76,7 +109,8 @@ public class Lifestones extends JavaPlugin {
 	}
 
 	
-	private void loadLocales(){
+	private void loadLocales() throws FileNotFoundException, IOException, InvalidConfigurationException{
+		@SuppressWarnings("static-access")
 		String localeDir = getDataFolder().separator + "locales" +getDataFolder().separator;
 		
 		//Copy existing locales into plugin dir, so admin knows what's available. 
@@ -102,7 +136,7 @@ public class Lifestones extends JavaPlugin {
 		}
 	}
 	
-	private void loadAliases(){
+	private void loadAliases() throws FileNotFoundException, IOException, InvalidConfigurationException{
 		YML yml = new YML(getResource("aliases.yml"),getDataFolder(), "aliases.yml");
 		
 		for (String key : yml.getKeys(false)) {
