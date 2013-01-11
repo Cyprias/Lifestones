@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.cyprias.Lifestones.Attunements;
+import com.cyprias.Lifestones.Config;
 import com.cyprias.Lifestones.Database;
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
@@ -253,6 +254,29 @@ public class SQLite {
 		stat.close();
 		con.close();
 
+	}
+	public static int executeUpdate(String query, Object... args) throws SQLException {
+		Connection con = getConnection();
+		int sucessful = 0;
+
+		PreparedStatement statement = con.prepareStatement(query);
+		int i = 0;
+		for (Object a : args) {
+			i += 1;
+			statement.setObject(i, a);
+		}
+		sucessful = statement.executeUpdate();
+		con.close();
+		return sucessful;
+	}
+	
+	public static int removeAttunment(String player, String world) throws SQLException {
+		// TODO Auto-generated method stub
+		//query = "insert into `" + table + "` (player, world, x,y,z,yaw, pitch) values (?, ?, ?, ?,?,?,?)";
+		//String query = "UPDATE `" + table + "` SET `x` = ?, `y` = ?, `z` = ?, `yaw` = ?, `pitch` = ? WHERE `player` = ? AND `world` = ?";
+		String table = "Attunements_v2";
+		
+		return executeUpdate("DELETE FROM " + table + " WHERE `player` LIKE ? AND `world` LIKE ?;", player, world);
 	}
 
 }

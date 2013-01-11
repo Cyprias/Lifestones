@@ -1,5 +1,6 @@
 package com.cyprias.Lifestones;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,23 @@ public class Attunements {
 			this.player = player;
 			this.loc = loc;
 		}
+		
+		public Boolean remove() throws SQLException{
+			int s = Database.removeAttunment(player, loc.getWorld().getName());
+			
+			if (s > 0){
+				for (int i=players.get(player).size()-1;i>=0;i--)
+					if (players.get(player).get(i).equals(this))
+						players.get(player).remove(i);
+
+				if (players.get(player).size() == 0)
+					players.remove(player);
+				
+				return true;
+			}
+			return false;
+		}
+		
 	}
 	
 	public static void onEnable(){

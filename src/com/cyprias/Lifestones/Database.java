@@ -127,6 +127,15 @@ public class Database {
 		}
 	}
 	
+	public static int removeAttunment(String player, String world) throws SQLException{
+		if (Config.mysqlEnabled == true){
+			return MySQL.removeAttunment(player, world);
+		}else{
+			return SQLite.removeAttunment(player, world);
+		}
+
+	}
+	
 	public static void saveAttunment(String player, String world, double x, double y, double z,  float yaw, float pitch) throws SQLException{
 		if (Config.mysqlEnabled == true){
 			MySQL.saveAttunment(player, world, x, y, z,yaw,pitch);

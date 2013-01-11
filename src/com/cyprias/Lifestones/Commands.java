@@ -202,6 +202,42 @@ public class Commands implements CommandExecutor {
 						
 						return true;
 					}
+				} else if (args[0].equalsIgnoreCase("release")) {
+					if (!hasCommandPermission(sender, "lifestones.release")) {
+						return true;
+					}
+					
+					
+					if (Attunements.containsKey(sender.getName())) {
+						Attunement attunement = Attunements.get(sender.getName(), ((Player) sender).getWorld().getName());
+						
+
+						
+						
+						
+						try {
+							String worldName = attunement.loc.getWorld().getName();
+							if (attunement.remove()){
+								plugin.sendMessage(sender, GRAY + F("releasedAttunement", ChatColor.WHITE+ worldName +GRAY));
+							}
+							
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							plugin.sendMessage(sender, "Error: " + e.getMessage());
+							e.printStackTrace();
+						}
+						
+	
+						return true;
+						//event.setRespawnLocation(attunement.loc);
+						//plugin.playerProtections.put(event.getPlayer().getName(), Lifestones.getUnixTime() + Config.protectPlayerAfterRecallDuration);
+					}
+					
+				
+					plugin.sendMessage(sender, GRAY + L("notAttunedYet"));
+				
+					
+					return true;
 				} else if (args[0].equalsIgnoreCase("near")) {
 					if (!hasCommandPermission(sender, "lifestones.near")) {
 						return true;
@@ -474,6 +510,10 @@ public class Commands implements CommandExecutor {
 			
 			if (sender.hasPermission("lifestones.attunement") && (sender instanceof Player))
 				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" attunement" + GRAY+" - " + L("attunementCommands"), true, false);
+			
+			if (sender.hasPermission("lifestones.release") && (sender instanceof Player))
+				plugin.sendMessage(sender, GREEN+"/"+commandLabel+" release" + GRAY+" - " + L("releaseCommand"), true, false);
+			//
 			
 			return true;
 		}
