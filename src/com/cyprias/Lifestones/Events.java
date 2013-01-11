@@ -168,8 +168,11 @@ public class Events implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		plugin.debug(event.getEventName());
-		if (Attunements.containsKey(event.getPlayer().getName())) {
+		if (Attunements.containsKey(event.getPlayer())) {
 			Attunement attunement = Attunements.get(event.getPlayer());
+			if (attunement == null)
+				return;
+			
 			event.setRespawnLocation(attunement.loc);
 			plugin.playerProtections.put(event.getPlayer().getName(), Lifestones.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}

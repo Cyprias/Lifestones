@@ -19,3 +19,4 @@ lookAtNearestLS: true
 callBlockPlaceEvent: true
 localeFile: enUS.yml
 allowPerWorldAttunement: true
+fallbackToOtherWorldLifestone: true

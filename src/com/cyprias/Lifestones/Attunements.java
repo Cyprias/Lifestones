@@ -62,14 +62,14 @@ public class Attunements {
 	}
 	
 	public static Attunement get(String key, String worldName){
-		return get(key, server.getWorld(worldName));
+		return get2(key, server.getWorld(worldName));
 	}
 	
-	public static Attunement get(String key, World world){
+	public static Attunement get2(String key, World world){
 		//return players.get(key);
 		if (players.containsKey(key)){
 			for (int i=0;i<players.get(key).size();i++){
-				if ((players.get(key).get(i).loc.getWorld() != null && players.get(key).get(i).loc.getWorld().equals(world)) || i == (players.get(key).size()-1))
+				if ((players.get(key).get(i).loc.getWorld() != null && players.get(key).get(i).loc.getWorld().equals(world)) || (Config.fallbackToOtherWorldLifestone == true && i == (players.get(key).size()-1)))
 					return players.get(key).get(i);
 			}
 		}
@@ -78,7 +78,7 @@ public class Attunements {
 	}
 	
 	public static Attunement get(Player player){
-		return get(player.getName(), player.getWorld());
+		return get2(player.getName(), player.getWorld());
 	}
 	
 	public static void put(String key, Attunement value){
@@ -102,8 +102,23 @@ public class Attunements {
 		
 		//return players.put(key, value);
 	}
-	public static boolean containsKey(String key){
+	public static boolean containsKey2(String key){
 		return players.containsKey(key);
+	}
+	
+	public static boolean containsKey(Player player){
+		return containsKey2(player.getName(), player.getWorld().getName());
+	}
+	
+	public static boolean containsKey2(String key, String worldName){
+		if (players.containsKey(key)){
+			for (int i=0;i<players.get(key).size();i++){
+				if (players.get(key).get(i).loc.getWorld().getName().equalsIgnoreCase(worldName))
+					return true;
+				
+			}
+		}
+		return false;
 	}
 	
 	

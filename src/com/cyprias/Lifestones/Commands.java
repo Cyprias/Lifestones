@@ -62,6 +62,8 @@ public class Commands implements CommandExecutor {
 				return;
 			}
 
+			
+			
 			Attunement attunement = Attunements.get(player);
 
 			player.teleport(attunement.loc);
@@ -90,7 +92,9 @@ public class Commands implements CommandExecutor {
 			
 			
 			
-			if (!(Attunements.containsKey(sender.getName()))) {
+			
+			
+			if (!(Config.fallbackToOtherWorldLifestone && Attunements.containsKey2(sender.getName()) || Attunements.containsKey2(sender.getName(), ((Player) sender).getWorld().getName()))) {
 				plugin.sendMessage(sender, GRAY+L("notAttunedYet"));
 				return true;
 			}
@@ -208,8 +212,8 @@ public class Commands implements CommandExecutor {
 					}
 					
 					
-					if (Attunements.containsKey(sender.getName())) {
-						Attunement attunement = Attunements.get(sender.getName(), ((Player) sender).getWorld().getName());
+					if (Attunements.containsKey((Player) sender)) {
+						Attunement attunement = Attunements.get((Player) sender);
 						
 
 						
@@ -398,7 +402,7 @@ public class Commands implements CommandExecutor {
 							if (!hasCommandPermission(sender, "lifestones.attunement.setdefault"))
 								return true;
 							
-							if (Attunements.containsKey(sender.getName())) {
+							if (Attunements.containsKey((Player) sender)) {
 								Attunement attunement = Attunements.get((Player) sender);
 								//event.setRespawnLocation(attunement.loc);
 								
