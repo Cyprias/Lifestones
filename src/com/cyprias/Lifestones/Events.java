@@ -91,6 +91,8 @@ public class Events implements Listener {
 		}
 
 		public void run() {
+			attuning.remove(this.player.getName());
+
 			if (player.getLocation().getBlockX() != pX || player.getLocation().getBlockY() != pY || player.getLocation().getBlockZ() != pZ) {
 				plugin.sendMessage(player, GRAY + L("movedTooFarAttunementFailed"));
 				return;
@@ -127,6 +129,8 @@ public class Events implements Listener {
 		}
 	}
 
+	public static HashMap<String, Integer> attuning = new HashMap<String, Integer>();
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled())
@@ -145,7 +149,14 @@ public class Events implements Listener {
 						return;
 					}
 
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay * 20L);
+					
+					
+					if (attuning.containsKey(player.getName()))
+						return;
+					
+					int task = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new attuneTask(player), Config.attuneDelay * 20L);
+					attuning.put(player.getName(), task);
+					
 				}
 			}
 		}
