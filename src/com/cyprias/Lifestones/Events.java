@@ -32,7 +32,6 @@ import org.bukkit.material.PistonBaseMaterial;
 
 import com.cyprias.Lifestones.Attunements.Attunement;
 import com.cyprias.Lifestones.Lifestones.lifestoneLoc;
-import com.cyprias.Lifestones.VersionChecker.VersionCheckerEvent;
 
 public class Events implements Listener {
 	private Lifestones plugin;
@@ -53,7 +52,6 @@ public class Events implements Listener {
 		PlayerCommandPreprocessEvent.getHandlerList().unregister(this);
 		PlayerInteractEvent.getHandlerList().unregister(this);
 		PlayerRespawnEvent.getHandlerList().unregister(this);
-		VersionCheckerEvent.getHandlerList().unregister(this);
 	}
 
 	/*
@@ -377,19 +375,6 @@ public class Events implements Listener {
 			}
 		}
 
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onVersionChecker(VersionCheckerEvent event) {
-		if (event.getPluginName() == plugin.getName()) {
-			VersionChecker.versionInfo info = event.getVersionInfo(0);
-			String curVersion = plugin.getDescription().getVersion();
-			int compare = VersionChecker.compareVersions(curVersion, info.getTitle());
-			if (compare < 0) {
-				plugin.info("We're running " + plugin.getName() + " v" + curVersion + ", v" + info.getTitle() + " is available");
-				plugin.info(info.getLink());
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

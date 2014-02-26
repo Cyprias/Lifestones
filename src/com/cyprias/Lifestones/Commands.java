@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.server.v1_7_R1.Material;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -147,6 +149,7 @@ public class Commands implements CommandExecutor {
 						
 						if (Config.callBlockPlaceEvent == true){
 							e = new BlockPlaceEvent(rBlock, rBlock.getState(), pBlock, player.getItemInHand(), player, false);
+							
 							e.getBlock().setTypeId(lsStructure.bID);
 							e.getBlock().setData(lsStructure.bData);
 

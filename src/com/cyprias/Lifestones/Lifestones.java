@@ -55,10 +55,6 @@ public class Lifestones extends JavaPlugin {
 
 		this.commands = new Commands(this);
 		this.events = new Events(this);
-
-
-		if (Config.checkForNewVersion == true)
-			VersionChecker.retreiveVersionInfo(this, "http://dev.bukkit.org/server-mods/lifestones/files.rss");
 		
 		wb = (WorldBorder) getServer().getPluginManager().getPlugin("WorldBorder");
 		log.info(String.format("%s v%s is loaded.", pluginName, this.getDescription().getVersion()));
@@ -101,7 +97,6 @@ public class Lifestones extends JavaPlugin {
 			metrics.start();
 		} catch (IOException e) {
 		}
-		
 		
 		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
