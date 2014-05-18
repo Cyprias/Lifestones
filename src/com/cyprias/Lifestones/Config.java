@@ -20,7 +20,8 @@ public class Config {
 	public static Boolean fallbackToOtherWorldLifestone, mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS, callBlockPlaceEvent, allowPerWorldAttunement;
 	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort, localeFile;
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
-
+	public static Boolean useMetrics;
+	
 	public Config(Lifestones plugin) {
 		Config.plugin = plugin;
 		
@@ -69,6 +70,8 @@ public class Config {
 		allowPerWorldAttunement = config.getBoolean("allowPerWorldAttunement");
 		
 		fallbackToOtherWorldLifestone = config.getBoolean("fallbackToOtherWorldLifestone");
+		useMetrics = config.getBoolean("use-metrics");
+		
 		
 		loadStrucutre();
 		loadDefaultAttunement();

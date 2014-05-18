@@ -20,3 +20,4 @@ callBlockPlaceEvent: true
 localeFile: enUS.yml
 allowPerWorldAttunement: true
 fallbackToOtherWorldLifestone: true
+use-metrics: true

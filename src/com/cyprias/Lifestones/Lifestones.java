@@ -92,12 +92,14 @@ public class Lifestones extends JavaPlugin {
 		} catch (SQLException e) {e.printStackTrace();
 		}
 
-		try {
-			Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (IOException e) {
+		if (Config.useMetrics == true)
+		{
+			try {
+				Metrics metrics = new Metrics(this);
+				metrics.start();
+			} catch (IOException e) {
+			}
 		}
-		
 		log.info(String.format("%s v%s is enabled.", pluginName, this.getDescription().getVersion()));
 	}
 	public void onDisable() {
