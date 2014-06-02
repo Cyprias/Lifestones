@@ -18,7 +18,7 @@ public class Config {
 	
 
 	public static Boolean fallbackToOtherWorldLifestone, mysqlEnabled, preferAsyncDBCalls, setUnregisteredLifestonesToAir, debugMessages, checkForNewVersion, lookAtNearestLS, callBlockPlaceEvent, allowPerWorldAttunement;
-	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort, localeFile;
+	public static String sqlUsername, sqlPassword, sqlURL, sqlPrefix, sqlDatabase, sqlHost, sqlPort, localeFile, respawnPriority;
 	public static int protectLifestoneRadius, attuneDelay, recallDelay, protectPlayerAfterRecallDuration, randomTPRadius, rowsPerPage;
 	public static Boolean useMetrics;
 	
@@ -71,6 +71,8 @@ public class Config {
 		
 		fallbackToOtherWorldLifestone = config.getBoolean("fallbackToOtherWorldLifestone");
 		useMetrics = config.getBoolean("use-metrics");
+		
+		respawnPriority = config.getString("respawn-listener-priority");
 		
 		
 		loadStrucutre();

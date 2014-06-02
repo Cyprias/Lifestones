@@ -21,3 +21,4 @@ localeFile: enUS.yml
 allowPerWorldAttunement: true
 fallbackToOtherWorldLifestone: true
 use-metrics: true
+respawn-listener-priority: HIGHEST
