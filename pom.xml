@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Lifestones</groupId>
   <artifactId>Lifestones</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.9.0</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>

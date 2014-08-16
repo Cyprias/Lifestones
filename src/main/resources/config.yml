@@ -22,3 +22,9 @@ allowPerWorldAttunement: true
 fallbackToOtherWorldLifestone: true
 use-metrics: true
 respawn-listener-priority: HIGHEST
+
+generate-lifestone-worlds:
+  - world
+  - mineworld
+
+generate-chunk-change: 0.00390625

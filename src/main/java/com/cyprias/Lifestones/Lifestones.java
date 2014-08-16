@@ -26,6 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.cyprias.Lifestones.Config.lifestoneStructure;
+import com.cyprias.Lifestones.listeners.WorldListener;
 import com.wimbli.WorldBorder.WorldBorder;
 
 public class Lifestones extends JavaPlugin {
@@ -124,7 +125,8 @@ public class Lifestones extends JavaPlugin {
 			}
 		};
 		getServer().getPluginManager().registerEvent(PlayerRespawnEvent.class, junk, EventPriority.valueOf(Config.respawnPriority), ee, this);
-
+	
+		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		
 		Attunements.onEnable();
 		try {
@@ -234,9 +236,9 @@ public class Lifestones extends JavaPlugin {
 		return (System.currentTimeMillis() / 1000D);
 	}
 
-	public ArrayList<lifestoneLoc> lifestoneLocations = new ArrayList<lifestoneLoc>();
+	public static ArrayList<lifestoneLoc> lifestoneLocations = new ArrayList<lifestoneLoc>();
 
-	public void regsterLifestone(final lifestoneLoc lsLoc) {
+	public static void regsterLifestone(final lifestoneLoc lsLoc) {
 		for (int i = 0; i < lifestoneLocations.size(); i++) {
 			if (lifestoneLocations.get(i).world.equals(lsLoc.world)) {
 				if (lifestoneLocations.get(i).X == lsLoc.X && lifestoneLocations.get(i).Y == lsLoc.Y && lifestoneLocations.get(i).Z == lsLoc.Z) {
@@ -250,7 +252,7 @@ public class Lifestones extends JavaPlugin {
 		debug("Registered LS at " + lsLoc.world + ", " + lsLoc.X + ", " + lsLoc.Y + ", " + lsLoc.Z);
 		// isLifestoneCache.clear();
 
-		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+		getInstance().getServer().getScheduler().scheduleSyncDelayedTask(getInstance(), new Runnable() {
 			public void run() {
 				cacheSurroundBlocks(lsLoc);
 			}
@@ -260,10 +262,10 @@ public class Lifestones extends JavaPlugin {
 	public static HashMap<Block, Block> isLifestoneCache = new HashMap<Block, Block>();
 	public static HashMap<Block, Block> isProtectedCache = new HashMap<Block, Block>();
 
-	public World getWorld(String worldName) {
-		for (int i = 0; i < getServer().getWorlds().size(); i++) {
-			if (getServer().getWorlds().get(i).getName().equalsIgnoreCase(worldName)) {
-				return getServer().getWorlds().get(i);
+	public static World getWorld(String worldName) {
+		for (int i = 0; i < getInstance().getServer().getWorlds().size(); i++) {
+			if (getInstance().getServer().getWorlds().get(i).getName().equalsIgnoreCase(worldName)) {
+				return getInstance().getServer().getWorlds().get(i);
 			}
 
 		}
@@ -271,7 +273,7 @@ public class Lifestones extends JavaPlugin {
 		return null;
 	}
 
-	private void cacheSurroundBlocks(lifestoneLoc loc) {
+	private static void cacheSurroundBlocks(lifestoneLoc loc) {
 		World world = getWorld(loc.world);
 		if (world != null) {
 			Block cBlock = world.getBlockAt(loc.X, loc.Y, loc.Z);
@@ -435,7 +437,7 @@ public class Lifestones extends JavaPlugin {
 		return getRandomLocation(world, 0);
 	}
 
-	private Block getTopBlock(World world, int X, int Z) {
+	public static Block getTopBlock(World world, int X, int Z) {
 		Block b;
 		for (int i = 255; i > 0; i--) {
 			b = world.getBlockAt(X, i, Z);
@@ -448,6 +450,25 @@ public class Lifestones extends JavaPlugin {
 		return null;
 	}
 
+	public static Block getSurfaceBlock(World world, int X, int Z) {
+		Block b;
+		for (int i = 127; i > 0; i--) {
+			b = world.getBlockAt(X, i, Z);
+			
+			// Ignore surface water chunks.
+			if (b.getTypeId() == 8 || b.getTypeId() == 9)
+			{
+				return null;
+			}
+			
+			// Surface blocks are dirt, stone and sand.
+			if (b.getTypeId() == 1 || b.getTypeId() == 2 || b.getTypeId() == 3 || b.getTypeId() == 12 || b.getTypeId() == 24) {
+				return b; // world.getBlockAt(X, i, Z);
+			}
+		}
+		return null;
+	}
+	
 	public static boolean isInt(final String sInt) {
 		try {
 			Integer.parseInt(sInt);

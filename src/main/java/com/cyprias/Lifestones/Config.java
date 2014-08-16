@@ -11,7 +11,6 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-
 public class Config {
 	private static Lifestones plugin;
 	private static Configuration config;
@@ -116,7 +115,7 @@ public class Config {
 			this.bData = bData;
 		}
 	}
-	static List<lifestoneStructure> structureBlocks = new ArrayList<lifestoneStructure>();
+	public static List<lifestoneStructure> structureBlocks = new ArrayList<lifestoneStructure>();
 	
 	
 	private static void loadStrucutre() throws FileNotFoundException, IOException, InvalidConfigurationException{
@@ -148,4 +147,13 @@ public class Config {
 		
 		
 	}
+	
+	public static List<String> getStringList(String property) {
+		return Lifestones.getInstance().getConfig().getStringList(property);
+	}
+	
+	public static Double getDouble(String property) {
+		return Lifestones.getInstance().getConfig().getDouble(property);
+	}
+	
 }
