@@ -48,11 +48,11 @@ public class WorldListener implements Listener {
 			Block sBlock = Lifestones.getSurfaceBlock(mBlock.getWorld(), (int) mBlock.getX(), (int) mBlock.getZ());
 			if (sBlock == null)
 				return;
-			
-			Lifestones.debug("  Generating a lifestone..." + sBlock.getType());
 
 			// Go up one block so our lifestone isn't in the ground.
 			sBlock = sBlock.getRelative(0,1,0);
+			
+			Lifestones.info("Generating a lifestone at " + sBlock.getWorld().getName() + " " + sBlock.getX() + " "  + sBlock.getY() + " " + sBlock.getZ());
 			
 			lifestoneStructure lsStructure;
 			Block rBlock;
