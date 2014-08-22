@@ -17,9 +17,11 @@ public class PlayerRespawnListener implements Listener {
 		Lifestones.debug(event.getEventName());
 		if (Attunements.containsKey(event.getPlayer())) {
 			Attunement attunement = Attunements.get(event.getPlayer());
-			if (attunement == null)
-				return;
-
+			if (attunement == null && Attunements.defaultAttunement != null)
+			{
+				// Player hasn't attuned anywhere yet, just grab the default attunement location.
+				attunement = new Attunement(event.getPlayer().getName(), Attunements.defaultAttunement);
+			}
 			event.setRespawnLocation(attunement.loc);
 			Lifestones.playerProtections.put(event.getPlayer().getName(), Lifestones.getUnixTime() + Config.protectPlayerAfterRecallDuration);
 		}
